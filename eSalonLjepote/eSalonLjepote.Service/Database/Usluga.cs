@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace eSalonLjepote.Service.Database;
+
+public partial class Usluga
+{
+    public int UslugaId { get; set; }
+
+    public string NazivUsluge { get; set; } = null!;
+
+    public decimal? Cijena { get; set; }
+
+    public int? Trajanje { get; set; }
+
+    public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
+
+    public virtual ICollection<Termini> Terminis { get; } = new List<Termini>();
+}
