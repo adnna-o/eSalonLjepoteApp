@@ -11,7 +11,7 @@ public partial class Usluga
 
     public decimal? Cijena { get; set; }
 
-    public int? Trajanje { get; set; }
+    public string? Trajanje { get; set; }
 
     public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
 

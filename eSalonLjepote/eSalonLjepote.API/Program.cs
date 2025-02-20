@@ -1,9 +1,21 @@
+using eSaljonLjepote.Services.Service;
+using eSalonLjepote.Service.Database;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 // Add services to the container.
+
+builder.Services.AddTransient<IKorisnikService, KorisnikService>();
+
+builder.Services.AddAutoMapper(typeof(IKorisnikService));
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ESalonLjepoteContext>(options => options.UseSqlServer(connectionString));
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
