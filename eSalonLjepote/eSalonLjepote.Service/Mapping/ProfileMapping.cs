@@ -19,6 +19,16 @@ namespace eSaljonLjepote.Services.Mapping
             CreateMap<KorisnikInsertRequest, eSalonLjepote.Service.Database.Korisnik>();
             CreateMap<KorisnikUpdateRequest, eSalonLjepote.Service.Database.Korisnik>();
 
+            CreateMap<eSalonLjepote.Service.Database.Administrator, eSalonLjepote.Model.Models.Administrator>();
+            CreateMap<AdministratorSearchRequest, eSalonLjepote.Service.Database.Administrator>();
+            CreateMap<AdministratorInsterRequest, eSalonLjepote.Service.Database.Administrator>();
+            CreateMap<AdministratorUpdateRequest, eSalonLjepote.Service.Database.Administrator>();
+
+            CreateMap<eSalonLjepote.Service.Database.Usluga, eSalonLjepote.Model.Models.Usluga>();
+            CreateMap<UslugaSearchRequest, eSalonLjepote.Service.Database.Usluga>();
+            CreateMap<UslugaInsertRequest, eSalonLjepote.Service.Database.Usluga>();
+            CreateMap<UslugaUpdateRequest, eSalonLjepote.Service.Database.Usluga>();
+
         }
     }
 }

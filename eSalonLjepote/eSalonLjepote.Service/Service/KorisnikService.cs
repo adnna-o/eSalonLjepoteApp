@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eSaljonLjepote.Services.Database;
+using eSaljonLjepote.Services.Service;
 using eSalonLjepote.Model.Request;
 using eSalonLjepote.Model.Request.SearchRequest;
 using eSalonLjepote.Service.Database;
@@ -11,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eSaljonLjepote.Services.Service
+namespace eSalonLjepote.Services.Service
 {
     public class KorisnikService : BaseCRUDService<eSalonLjepote.Model.Models.Korisnik, eSalonLjepote.Service.Database.Korisnik, KorisnikSearchRequest, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {

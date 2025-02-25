@@ -1,5 +1,7 @@
 using eSaljonLjepote.Services.Service;
 using eSalonLjepote.Service.Database;
+using eSalonLjepote.Service.Service;
+using eSalonLjepote.Services.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
+builder.Services.AddTransient<IAdministratorService, AdministratorService>();
+builder.Services.AddTransient<IUslugaService, UslugaService>();
+
 
 builder.Services.AddAutoMapper(typeof(IKorisnikService));
 
