@@ -6,10 +6,12 @@ namespace eSalonLjepote.Service.Database;
 public partial class Klijenti
 {
     public int KlijentId { get; set; }
-
+    
+   
     public int KorisnikId { get; set; }
 
     public virtual Korisnik Korisnik { get; set; } = null!;
+
 
     public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
 

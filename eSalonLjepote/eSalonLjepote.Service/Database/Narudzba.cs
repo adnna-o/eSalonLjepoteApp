@@ -24,4 +24,7 @@ public partial class Narudzba
     public virtual Placanje Placanje { get; set; } = null!;
 
     public virtual Proizvod Proizvod { get; set; } = null!;
+
+    public virtual ICollection<Klijenti> Klijentis { get; } = new List<Klijenti>();
+
 }

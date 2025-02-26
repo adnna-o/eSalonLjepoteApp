@@ -13,6 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IAdministratorService, AdministratorService>();
 builder.Services.AddTransient<IUslugaService, UslugaService>();
+builder.Services.AddTransient<IZaposleniService, ZaposleniService>();
+builder.Services.AddTransient<IUlogaService, UlogaService>();
+builder.Services.AddTransient<IKlijentiService, KlijentiService>();
+builder.Services.AddTransient<ITerminiService, TerminiService>();
+builder.Services.AddTransient<IRadnoVrijemeService, RadnoVrijemeService>();
+builder.Services.AddTransient<ISalonLjepoteService, SalonLjepoteService>();
+builder.Services.AddTransient<IProizvodService, ProizvodiService>();
+builder.Services.AddTransient<IRecenzijeService, RecenzijeService>();
+builder.Services.AddTransient<IPlacanjeService, PlacanjeService>();
+builder.Services.AddTransient<IGalerijaService, GalerijaService>();
+builder.Services.AddTransient<INovostiService, NovostiService>();
 
 
 builder.Services.AddAutoMapper(typeof(IKorisnikService));

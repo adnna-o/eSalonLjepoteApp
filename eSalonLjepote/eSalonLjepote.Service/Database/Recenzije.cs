@@ -24,4 +24,5 @@ public partial class Recenzije
     public virtual Usluga Usluga { get; set; } = null!;
 
     public virtual Zaposleni Zaposleni { get; set; } = null!;
+    public virtual Proizvod Proizvod { get; set; } = null!;
 }

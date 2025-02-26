@@ -238,7 +238,7 @@ namespace eSaljonLjepote.Services.Database
                new Klijenti()
                {
                    KlijentId = 4001,
-                   KorisnikId = 1002
+                   KorisnikId = 1002,
                });
             #endregion
 
