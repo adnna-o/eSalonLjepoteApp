@@ -84,6 +84,16 @@ namespace eSaljonLjepote.Services.Mapping
             CreateMap<NovostiInsertRequest, eSalonLjepote.Service.Database.Novosti>();
             CreateMap<NovostiUpdateRequest, eSalonLjepote.Service.Database.Novosti>();
 
+            CreateMap<eSalonLjepote.Service.Database.KorisnikUloga, eSalonLjepote.Model.Models.KorisnikUloga>();
+            CreateMap<BaseSearchObject, eSalonLjepote.Service.Database.KorisnikUloga>();
+            CreateMap<KorisnikUlogaInsertRequest, eSalonLjepote.Service.Database.KorisnikUloga>();
+            CreateMap<KorisnikUlogaUpdateRequest, eSalonLjepote.Service.Database.KorisnikUloga>();
+
+            CreateMap<eSalonLjepote.Service.Database.Narudzba, eSalonLjepote.Model.Models.Narudzba>();
+            CreateMap<NarudzbaSearchRequest, eSalonLjepote.Service.Database.Narudzba>();
+            CreateMap<NarudzbaInsertRequest, eSalonLjepote.Service.Database.Narudzba>();
+            CreateMap<NarudzbaUpdateRequest, eSalonLjepote.Service.Database.Narudzba>();
+
         }
     }
 }

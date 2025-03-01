@@ -24,6 +24,8 @@ builder.Services.AddTransient<IRecenzijeService, RecenzijeService>();
 builder.Services.AddTransient<IPlacanjeService, PlacanjeService>();
 builder.Services.AddTransient<IGalerijaService, GalerijaService>();
 builder.Services.AddTransient<INovostiService, NovostiService>();
+builder.Services.AddTransient<IKorisnikUlogaService, KorisnikUlogaService>();
+builder.Services.AddTransient<INarudzbaService, NarudzbaService>();
 
 
 builder.Services.AddAutoMapper(typeof(IKorisnikService));
