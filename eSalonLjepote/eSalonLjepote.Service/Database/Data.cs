@@ -1,6 +1,6 @@
 ﻿using eSaljonLjepote.Services.Service;
 using eSalonLjepote.Service.Database;
-using eSalonLjepote.Services.Service;
+using eSalonLjepote.Service.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -161,35 +161,35 @@ namespace eSaljonLjepote.Services.Database
             modelBuilder.Entity<KorisnikUloga>().HasData(
                 new KorisnikUloga()
                 {
-                    KorisnikUlogaId = 1,
+                    KorisnikUlogaId = 1012,
                     KorisnikId = 1001,
                     UlogaId = 1,
                     DatumIzmjene = DateTime.Now
                 },
                   new KorisnikUloga()
                   {
-                      KorisnikUlogaId = 2,
+                      KorisnikUlogaId = 1013,
                       KorisnikId = 1002,
                       UlogaId = 2,
                       DatumIzmjene = DateTime.Now
                   },
                    new KorisnikUloga()
                    {
-                       KorisnikUlogaId = 3,
+                       KorisnikUlogaId = 1014,
                        KorisnikId = 1003,
                        UlogaId = 3,
                        DatumIzmjene = DateTime.Now
                    },
                     new KorisnikUloga()
                     {
-                        KorisnikUlogaId = 4,
+                        KorisnikUlogaId = 1015,
                         KorisnikId = 1004,
                         UlogaId = 3,
                         DatumIzmjene = DateTime.Now
                     },
                      new KorisnikUloga()
                      {
-                         KorisnikUlogaId = 5,
+                         KorisnikUlogaId = 1016,
                          KorisnikId = 1005,
                          UlogaId = 3,
                          DatumIzmjene = DateTime.Now

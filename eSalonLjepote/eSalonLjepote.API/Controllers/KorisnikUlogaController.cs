@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace eSalonLjepote.API.Controllers
 {
     [Route("[controller]")]
-   
-    public class KorisnikUlogaController : BaseCRUDController<Model.Models.KorisnikUloga, BaseSearchObject, KorisnikUlogaInsertRequest, KorisnikUlogaUpdateRequest>
+    public class KorisnikUlogaController : BaseCRUDController<Model.Models.KorisnikUloga, KorisnikUlogaSearchObject, KorisnikUlogaInsertRequest, KorisnikUlogaUpdateRequest>
     {
-        public KorisnikUlogaController(ILogger<BaseController<Model.Models.KorisnikUloga, BaseSearchObject>> logger, IKorisnikUlogaService service) : base(logger, service)
+        public KorisnikUlogaController(ILogger<BaseController<Model.Models.KorisnikUloga, KorisnikUlogaSearchObject>> logger, IKorisnikUlogaService service) : base(logger, service)
         {
+
         }
     }
 }

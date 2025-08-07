@@ -15,11 +15,13 @@ namespace eSaljonLjepote.Services.Mapping
         {
 
             CreateMap<eSalonLjepote.Service.Database.Korisnik, eSalonLjepote.Model.Models.Korisnik>();
-            CreateMap<KorisnikSearchRequest, eSalonLjepote.Service.Database.Korisnik>();
+            CreateMap<KorisnikSearchObject, eSalonLjepote.Service.Database.Korisnik>();
             CreateMap<KorisnikInsertRequest, eSalonLjepote.Service.Database.Korisnik>();
             CreateMap<KorisnikUpdateRequest, eSalonLjepote.Service.Database.Korisnik>();
 
-            CreateMap<eSalonLjepote.Service.Database.Administrator, eSalonLjepote.Model.Models.Administrator>();
+
+            CreateMap<eSalonLjepote.Service.Database.Administrator, eSalonLjepote.Model.Models.Administrator>()
+                .ForMember(dest => dest.Korisnik, opt => opt.Ignore()); ;
             CreateMap<AdministratorSearchRequest, eSalonLjepote.Service.Database.Administrator>();
             CreateMap<AdministratorInsterRequest, eSalonLjepote.Service.Database.Administrator>();
             CreateMap<AdministratorUpdateRequest, eSalonLjepote.Service.Database.Administrator>();
@@ -79,7 +81,7 @@ namespace eSaljonLjepote.Services.Mapping
             CreateMap<GalerijaInsertRequest, eSalonLjepote.Service.Database.Galerija>();
             CreateMap<GalerijaUpdateRequest, eSalonLjepote.Service.Database.Galerija>();
 
-            CreateMap<eSalonLjepote.Service.Database.Novosti, eSalonLjepote.Model.Models.Novosti>();
+            CreateMap<eSalonLjepote.Service.Database.Novosti, eSalonLjepote.Model.Models.Novosti>().ForMember(dest => dest.Korisnik, opt => opt.Ignore()); ;
             CreateMap<NovostiSearchRequest, eSalonLjepote.Service.Database.Novosti>();
             CreateMap<NovostiInsertRequest, eSalonLjepote.Service.Database.Novosti>();
             CreateMap<NovostiUpdateRequest, eSalonLjepote.Service.Database.Novosti>();
