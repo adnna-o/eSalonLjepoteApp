@@ -8,9 +8,9 @@ part 'uloga.g.dart';
 @JsonSerializable()
 class Uloga {
   int? ulogaId;
-  String? naziv;
+  String? nazivUloge;
  
-  Uloga({this.ulogaId, this.naziv});
+  Uloga({this.ulogaId, this.nazivUloge});
  
   factory Uloga.fromJson(Map<String, dynamic> json) => _$UlogaFromJson(json);
  

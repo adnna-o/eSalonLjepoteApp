@@ -8,10 +8,10 @@ part of 'uloga.dart';
 
 Uloga _$UlogaFromJson(Map<String, dynamic> json) => Uloga(
       ulogaId: (json['ulogaId'] as num?)?.toInt(),
-      naziv: json['naziv'] as String?,
+      nazivUloge: json['nazivUloge'] as String?,
     );
 
 Map<String, dynamic> _$UlogaToJson(Uloga instance) => <String, dynamic>{
       'ulogaId': instance.ulogaId,
-      'naziv': instance.naziv,
+      'nazivUloge': instance.nazivUloge,
     };

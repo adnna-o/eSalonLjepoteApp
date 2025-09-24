@@ -253,6 +253,7 @@ public partial class ESalonLjepoteContext : DbContext
 
             entity.ToTable("Termini");
 
+
             entity.Property(e => e.DatumTermina).HasColumnType("datetime");
 
             entity.HasOne(d => d.Klijent).WithMany(p => p.Terminis)

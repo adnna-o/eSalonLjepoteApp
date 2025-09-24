@@ -36,17 +36,29 @@ namespace eSalonLjepote.Service.Service
             return base.AddInclude(query, search);
         }
 
-        public override IQueryable<eSalonLjepote.Service.Database.Termini> AddFilter(IQueryable<eSalonLjepote.Service.Database.Termini> query, TerminiSearchRequest? search = null)
+        public override IQueryable<eSalonLjepote.Service.Database.Termini> AddFilter(
+    IQueryable<eSalonLjepote.Service.Database.Termini> query,
+    TerminiSearchRequest? search = null)
         {
             var filteredQuery = base.AddFilter(query, search);
 
-            if (search?.DatumTermina != null)
+            if (!string.IsNullOrWhiteSpace(search?.NazivUsluge))
             {
-                query = query.Where(x => x.DatumTermina.Date.Equals(search.DatumTermina));
+                filteredQuery = filteredQuery.Where(x => x.Usluga.NazivUsluge.Contains(search.NazivUsluge.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(search?.ImeKlijenta))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Klijent.Korisnik.Ime.Contains(search.ImeKlijenta.ToLower()));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.PrezimeKlijenta))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Klijent.Korisnik.Prezime.Contains(search.PrezimeKlijenta.ToLower()));
             }
 
             return filteredQuery;
         }
+
     }
-    
+
 }

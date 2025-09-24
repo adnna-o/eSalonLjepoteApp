@@ -2,6 +2,7 @@ import 'package:esalonljepote_desktop/models/korisnik.dart';
 import 'package:esalonljepote_desktop/models/search_result.dart';
 import 'package:esalonljepote_desktop/providers/korisnik_provider.dart';
 import 'package:esalonljepote_desktop/utils/util.dart';
+import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
  
@@ -33,8 +34,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
  
-    return Scaffold(
-      body: Container(
+    return MasterScreenWidget(
+      child: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(

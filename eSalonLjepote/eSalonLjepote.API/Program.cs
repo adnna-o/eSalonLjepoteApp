@@ -1,11 +1,14 @@
 using eSaljonLjepote.Services.Service;
 using eSalonLjepote.API;
+using eSalonLjepote.API.Filters;
 using eSalonLjepote.Service.Database;
 using eSalonLjepote.Service.Service;
 using eSalonLjepote.Service.Service;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,17 +36,19 @@ builder.Services.AddTransient<IKorisnikUlogaService, KorisnikUlogaService>();
 builder.Services.AddTransient<INarudzbaService, NarudzbaService>();
 
 
-builder.Services.AddAutoMapper(typeof(IKorisnikService));
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+    });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ESalonLjepoteContext>(options => options.UseSqlServer(connectionString));
-
-
-
-builder.Services.AddControllers();
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ErrorFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(/*c =>
+builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
     {
@@ -65,10 +70,25 @@ builder.Services.AddSwaggerGen(/*c =>
             new string[] {}
         }
     });
-}*/);
+});
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ESalonLjepoteContext>(options => options.UseSqlServer(connectionString));
 
-/*builder.Services.AddAuthentication("BasicAuthentication")
-    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);*/
+
+builder.Services.AddAutoMapper(typeof(IKorisnikService));
+
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ContractResolver = new DefaultContractResolver
+    {
+        NamingStrategy = new CamelCaseNamingStrategy()
+    };
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 
 var app = builder.Build();
 
@@ -81,7 +101,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

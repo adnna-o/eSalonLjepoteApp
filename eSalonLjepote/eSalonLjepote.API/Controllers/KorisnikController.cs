@@ -10,6 +10,7 @@ using eSalonLjepote.Model.Models;
 namespace eSalonLjepote.API.Controllers
 {
     [Route("[controller]")]
+
     public class KorisnikController : BaseCRUDController<Model.Models.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
         public KorisnikController(ILogger<BaseController<Model.Models.Korisnik, KorisnikSearchObject>> logger, IKorisnikService service) : base(logger, service)
@@ -40,6 +41,8 @@ namespace eSalonLjepote.API.Controllers
             string usernamePassword = encoding.GetString(Convert.FromBase64String(encodedHeader));
 
             int seperatorIndex = usernamePassword.IndexOf(':');
+            Console.WriteLine(User.Identity.Name);
+
 
             return ((IKorisnikService)_service).Login(usernamePassword.Substring(0, seperatorIndex), usernamePassword[(seperatorIndex + 1)..]);
         }

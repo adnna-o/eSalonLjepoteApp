@@ -1,5 +1,9 @@
+import 'package:esalonljepote_desktop/models/usluga.dart';
 import 'package:esalonljepote_desktop/providers/klijenti_provider.dart';
+import 'package:esalonljepote_desktop/providers/salonLjepote_provider.dart';
 import 'package:esalonljepote_desktop/providers/termini_provider.dart';
+import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
+import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_desktop/screens/termin_screen.dart';
 import 'package:esalonljepote_desktop/utils/util.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +23,11 @@ void main() {
       ChangeNotifierProvider(create:(_)=>KorisnikUlogaProvider()),
       ChangeNotifierProvider(create:(_)=>TerminiProvider()),
       ChangeNotifierProvider(create:(_)=>KlijentiProvider()),
+      ChangeNotifierProvider(create:(_)=>ZaposleniProvider()),
+      ChangeNotifierProvider(create:(_)=>SalonLjepoteProvider()),
+      ChangeNotifierProvider(create:(_)=>UslugaProvider()),
+
+
 
 
     ],
@@ -37,7 +46,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: TerminScreen(),
+      home: LoginPage(),
     );
   }
 }
@@ -85,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
       Authorization.korisnik = await _korisnikProvider.Authenticate();
 
       if (Authorization.korisnik?.korisnikUlogas
-              .any((role) => role.uloga?.naziv == "Admin") ==
+              .any((role) => role.uloga?.nazivUloge == "Admin") ==
           true) {
         setState(() {
           loggedInUserID = Authorization.korisnik?.korisnikId;
