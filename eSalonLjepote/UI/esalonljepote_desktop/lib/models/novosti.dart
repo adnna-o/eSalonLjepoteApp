@@ -1,0 +1,35 @@
+import 'package:esalonljepote_desktop/models/korisnik.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:esalonljepote_desktop/models/korisnik_uloga.dart';
+
+/// This allows the `User` class to access private members in
+/// the generated file. The value for this is *.g.dart, where
+/// the star denotes the source file name.
+part 'novosti.g.dart';
+
+/// An annotation for the code generator to know that this class needs the
+/// JSON serialization logic to be generated.
+@JsonSerializable()
+class Novosti {
+  Novosti({
+    this.novostiId,
+    this.naziv,
+    this.opisNovosti,
+    this.datumObjave,
+    this.korisnikId,
+    this.aktivna,
+
+  });
+
+  int? novostiId;
+  String? naziv;
+  String? opisNovosti;
+  DateTime? datumObjave;
+  int? korisnikId;
+  int? aktivna;
+
+  factory Novosti.fromJson(Map<String, dynamic> json) =>
+      _$NovostiFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NovostiToJson(this);
+}

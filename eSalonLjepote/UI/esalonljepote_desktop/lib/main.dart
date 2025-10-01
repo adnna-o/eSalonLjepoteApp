@@ -1,5 +1,9 @@
 import 'package:esalonljepote_desktop/models/usluga.dart';
+import 'package:esalonljepote_desktop/providers/administrator_provider.dart';
+import 'package:esalonljepote_desktop/providers/galerija_provider.dart';
 import 'package:esalonljepote_desktop/providers/klijenti_provider.dart';
+import 'package:esalonljepote_desktop/providers/novosti_provider.dart';
+import 'package:esalonljepote_desktop/providers/proizvod_provider.dart';
 import 'package:esalonljepote_desktop/providers/salonLjepote_provider.dart';
 import 'package:esalonljepote_desktop/providers/termini_provider.dart';
 import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
@@ -26,8 +30,10 @@ void main() {
       ChangeNotifierProvider(create:(_)=>ZaposleniProvider()),
       ChangeNotifierProvider(create:(_)=>SalonLjepoteProvider()),
       ChangeNotifierProvider(create:(_)=>UslugaProvider()),
-
-
+      ChangeNotifierProvider(create:(_)=>GalerijaProvider()),
+      ChangeNotifierProvider(create:(_)=>AdministratorProvider()),
+      ChangeNotifierProvider(create:(_)=>ProizvodProvider()),
+      ChangeNotifierProvider(create:(_)=>NovostiProvider()),
 
 
     ],
