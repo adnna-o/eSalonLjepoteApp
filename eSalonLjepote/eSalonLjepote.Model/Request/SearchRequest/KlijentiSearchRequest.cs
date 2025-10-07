@@ -10,5 +10,11 @@ namespace eSalonLjepote.Model.Request.SearchRequest
     {
        /// public int KorisnikId { get; set; }
         public bool isKorisnikIncluded { get; set; }
+        public string? ImeKlijenta { get; set; }
+        public string? PrezimeKlijenta { get; set; }
+        public string? UslugaKlijenta { get; set; }
+        public string? NarudzbaKlijenta { get; set; }
+
+
     }
 }

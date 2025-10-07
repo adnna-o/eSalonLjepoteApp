@@ -26,5 +26,34 @@ namespace eSalonLjepote.Service.Service
             }
             return base.AddInclude(query, search);
         }
+
+        public override IQueryable<Database.Klijenti> AddFilter(IQueryable<Database.Klijenti> query, KlijentiSearchRequest? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if (!string.IsNullOrWhiteSpace(search?.ImeKlijenta))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Korisnik.Ime.Contains(search.ImeKlijenta.ToLower()));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.PrezimeKlijenta))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Korisnik.Prezime.Contains(search.PrezimeKlijenta.ToLower()));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.UslugaKlijenta))
+            {
+                string searchUsluga= search.UslugaKlijenta.ToLower();
+
+                filteredQuery = filteredQuery.Where(x => x.Terminis.Any(t=>t.Usluga.NazivUsluge.ToLower()
+                .Contains(search.UslugaKlijenta.ToLower())));
+            }
+           if (!string.IsNullOrWhiteSpace(search?.NarudzbaKlijenta))
+            {
+                string searchNarudzba = search.NarudzbaKlijenta.ToLower();
+
+                filteredQuery = filteredQuery.Where(x => x.Korisnik.Narudzbas.Any(t => t.Proizvod.NazivProizvoda!.ToLower()
+                .Contains(search.NarudzbaKlijenta.ToLower())));
+            }
+            return filteredQuery;
+        }
     }
 }

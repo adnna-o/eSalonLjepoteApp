@@ -2,6 +2,8 @@ import 'package:esalonljepote_desktop/models/salonLjepote.dart';
 import 'package:esalonljepote_desktop/providers/salonLjepote_provider.dart';
 import 'package:esalonljepote_desktop/screens/galerija_screen.dart';
 import 'package:esalonljepote_desktop/screens/home_screen.dart';
+import 'package:esalonljepote_desktop/screens/klijent_screen.dart';
+import 'package:esalonljepote_desktop/screens/narudzba_screen.dart';
 import 'package:esalonljepote_desktop/screens/proizvod_screen.dart';
 import 'package:esalonljepote_desktop/screens/termin_screen.dart';
 import 'package:esalonljepote_desktop/screens/usluganovosti_screen.dart';
@@ -139,8 +141,8 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         _buildNavText(context, "Proizvodi", ProizvodScreen()),
         _buildNavText(context, "Usluge i novosti", UslugaNovostiScreen()),
       // _buildNavText(context, "Novosti", WelcomeScreen()),
-        _buildNavText(context, "Klijenti", WelcomeScreen()),
-        _buildNavText(context, "Narudzbe", WelcomeScreen()),
+        _buildNavText(context, "Klijenti", KlijentScreen()),
+        _buildNavText(context, "Narudzbe", NarudzbaScreen()),
         _buildNavText(context, "Historija", WelcomeScreen()),
       ],
     );

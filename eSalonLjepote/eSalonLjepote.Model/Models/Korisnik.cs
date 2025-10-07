@@ -29,13 +29,13 @@ namespace eSalonLjepote.Model.Models
         public string LozinkaHash { get; set; } = null!;
         public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; } = new List<KorisnikUloga>();
 
+         public virtual ICollection<Narudzba> Narudzbas { get; set; } = new List<Narudzba>();
         /* public virtual ICollection<Administrator> Administrators { get; set; } = new List<Administrator>();
 
          public virtual ICollection<Klijenti> Klijentis { get; set; } = new List<Klijenti>();
 
          public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
 
-         public virtual ICollection<Narudzba> Narudzbas { get; set; } = new List<Narudzba>();
 
          public virtual ICollection<Novosti> Novostis { get; set; } = new List<Novosti>();
 
