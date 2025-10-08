@@ -5,8 +5,10 @@ import 'package:esalonljepote_desktop/screens/home_screen.dart';
 import 'package:esalonljepote_desktop/screens/klijent_screen.dart';
 import 'package:esalonljepote_desktop/screens/narudzba_screen.dart';
 import 'package:esalonljepote_desktop/screens/proizvod_screen.dart';
+import 'package:esalonljepote_desktop/screens/report_screen.dart';
 import 'package:esalonljepote_desktop/screens/termin_screen.dart';
 import 'package:esalonljepote_desktop/screens/usluganovosti_screen.dart';
+import 'package:esalonljepote_desktop/screens/zaposleni_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -44,7 +46,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 63, 125, 137),
+        backgroundColor: Color.fromARGB(255, 132, 77, 97),
         automaticallyImplyLeading: false,
         title: widget.title_widget ??
             Text(
@@ -54,7 +56,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               ),
             ),
         actions: [
-          _buildNavBarItems(context),
+          _buildNavBarIcons(context),
         ],
       ),
       body: Column(
@@ -76,39 +78,36 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
           Row(
             children: [
               Icon(Icons.local_hospital,
-                  color: const Color.fromARGB(255, 63, 125, 137)),
+                  color: Color.fromARGB(255, 132, 77, 97)),
               SizedBox(width: 8.0),
               Text(
                 "Salon ljepote naziv ${_salonLjepote?.nazivSalona}",
                 style: TextStyle(
-                    color: const Color.fromARGB(255, 63, 125, 137),
-                    fontSize: 16.0),
+                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 16.0),
               ),
             ],
           ),
           SizedBox(width: 16.0),
           Row(
             children: [
-              Icon(Icons.phone, color: const Color.fromARGB(255, 63, 125, 137)),
+              Icon(Icons.phone, color: Color.fromARGB(255, 170, 169, 169)),
               SizedBox(width: 8.0),
               Text(
                 "${_salonLjepote?.telefon}",
                 style: TextStyle(
-                    color: const Color.fromARGB(255, 63, 125, 137),
-                    fontSize: 14.0),
+                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
               ),
             ],
           ),
           SizedBox(width: 16.0),
           Row(
             children: [
-              Icon(Icons.email, color: const Color.fromARGB(255, 63, 125, 137)),
+              Icon(Icons.email, color: Color.fromARGB(255, 132, 77, 97)),
               SizedBox(width: 8.0),
               Text(
                 "${_salonLjepote?.email}",
                 style: TextStyle(
-                    color: const Color.fromARGB(255, 63, 125, 137),
-                    fontSize: 14.0),
+                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
               ),
             ],
           ),
@@ -116,13 +115,12 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
           Row(
             children: [
               Icon(Icons.location_on,
-                  color: const Color.fromARGB(255, 63, 125, 137)),
+                  color: Color.fromARGB(255, 132, 77, 97)),
               SizedBox(width: 8.0),
               Text(
                 "${_salonLjepote?.adresa}",
                 style: TextStyle(
-                    color: const Color.fromARGB(255, 63, 125, 137),
-                    fontSize: 14.0),
+                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
               ),
             ],
           ),
@@ -131,50 +129,39 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     );
   }
 
-  Widget _buildNavBarItems(BuildContext context) {
+  Widget _buildNavBarIcons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildNavText(context, "Home", WelcomeScreen()),
-        _buildNavText(context, "Termini", TerminScreen()),
-        _buildNavText(context, "Galerija", GalerijaScreen()),
-        _buildNavText(context, "Proizvodi", ProizvodScreen()),
-        _buildNavText(context, "Usluge i novosti", UslugaNovostiScreen()),
-      // _buildNavText(context, "Novosti", WelcomeScreen()),
-        _buildNavText(context, "Klijenti", KlijentScreen()),
-        _buildNavText(context, "Narudzbe", NarudzbaScreen()),
-        _buildNavText(context, "Historija", WelcomeScreen()),
+        _buildNavIcon(context, Icons.home, WelcomeScreen(), "Home"),
+        _buildNavIcon(context, Icons.schedule, TerminScreen(), "Termini"),
+        _buildNavIcon(context, Icons.photo_library, GalerijaScreen(), "Galerija"),
+        _buildNavIcon(context, Icons.shopping_bag, ProizvodScreen(), "Proizvodi"),
+        _buildNavIcon(context, Icons.newspaper, UslugaNovostiScreen(), "Usluge i novosti"),
+        _buildNavIcon(context, Icons.people, KlijentScreen(), "Klijenti"),
+        _buildNavIcon(context, Icons.receipt_long, NarudzbaScreen(), "Narudzbe"),
+        _buildNavIcon(context, Icons.history, ReportScreen(), "Historija"),
+        _buildNavIcon(context, Icons.history, ZaposleniScreen(), "Historija"),
+
       ],
     );
   }
 
-  Widget _buildNavText(BuildContext context, String title, Widget screen) {
+  Widget _buildNavIcon(BuildContext context, IconData icon, Widget screen, String tooltip) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => screen),
           );
         },
-        onHover: (isHovered) {
-          setState(() {});
-        },
-        child: MouseRegion(
-          onEnter: (_) {
-            setState(() {});
-          },
-          onExit: (_) {
-            setState(() {});
-          },
-          child: Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-              decoration: TextDecoration.none,
-            ),
+        child: Tooltip(
+          message: tooltip,
+          child: Icon(
+            icon,
+            color: Color.fromARGB(255, 207, 181, 185),
+            size: 50,
           ),
         ),
       ),

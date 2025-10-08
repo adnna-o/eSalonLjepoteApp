@@ -42,8 +42,6 @@ class _GalerijaScreen extends State<GalerijaScreen> {
   SearchResult<Galerija>? galerijaResult;
   SearchResult<Administrator>? administratorResult;
 
-
-
   bool searchExecuted = false;
 
 //Inicijalizacija providera
@@ -55,7 +53,6 @@ class _GalerijaScreen extends State<GalerijaScreen> {
     _korisnikProvider = context.read<KorisnikProvider>();
     _administratorProvider = context.read<AdministratorProvider>();
 
-
     _fetchGalerija();
   }
 
@@ -66,18 +63,13 @@ class _GalerijaScreen extends State<GalerijaScreen> {
     var korisnikData = await _korisnikProvider.get();
     var administratorData = await _administratorProvider.get();
 
-
     setState(() {
       galerijaResult = galerijaData;
       zaposleniResult = zaposleniData;
       korisnikResult = korisnikData;
       administratorResult = administratorData;
-
     });
   }
-
- 
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +96,6 @@ class _GalerijaScreen extends State<GalerijaScreen> {
               },
               child: Text("Add new picture!"),
             ),
-            
           ],
         ),
       ),
@@ -120,74 +111,80 @@ class _GalerijaScreen extends State<GalerijaScreen> {
   }
 
   Widget _buildDataListView() {
-  if (galerijaResult == null || galerijaResult!.result.isEmpty) {
-    return const Center(child: Text("Nema slika u galeriji."));
-  }
+    if (galerijaResult == null || galerijaResult!.result.isEmpty) {
+      return const Center(child: Text("Nema slika u galeriji."));
+    }
 
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: GridView.builder(
-      shrinkWrap: true,
-      itemCount: galerijaResult!.result.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // Možeš prilagoditi broj kolona
-        mainAxisSpacing: 16.0,
-        crossAxisSpacing: 16.0,
-        childAspectRatio: 3 / 4, // prilagodi dimenzije
-      ),
-      itemBuilder: (context, index) {
-        final galerija = galerijaResult!.result[index];
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        itemCount: galerijaResult!.result.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // Možeš prilagoditi broj kolona
+          mainAxisSpacing: 16.0,
+          crossAxisSpacing: 16.0,
+          childAspectRatio: 3 / 4, // prilagodi dimenzije
+        ),
+        itemBuilder: (context, index) {
+          final galerija = galerijaResult!.result[index];
 
-        var administrator = administratorResult?.result
-            .firstWhere((p) => p.administratorId == galerija.administratorId, orElse: () => Administrator());
+          var administrator = administratorResult?.result.firstWhere(
+              (p) => p.administratorId == galerija.administratorId,
+              orElse: () => Administrator());
 
-        var korisnik = administrator != null && administrator.korisnikId != null
-            ? korisnikResult?.result
-                .firstWhere((k) => k.korisnikId == administrator.korisnikId, orElse: () => Korisnik(ime: "Nepoznato"))
-            : null;
+          var korisnik =
+              administrator != null && administrator.korisnikId != null
+                  ? korisnikResult?.result.firstWhere(
+                      (k) => k.korisnikId == administrator.korisnikId,
+                      orElse: () => Korisnik(ime: "Nepoznato"))
+                  : null;
 
-        String adminIme = korisnik?.ime ?? "Nepoznato";
+          String adminIme = korisnik?.ime ?? "Nepoznato";
 
-        return Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: galerija.slika != null && galerija.slika!.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        child: Image.memory(
-                          base64Decode(galerija.slika!),
-                          fit: BoxFit.cover,
+          return Card(
+            elevation: 4,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: galerija.slika != null && galerija.slika!.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12)),
+                          child: Image.memory(
+                            base64Decode(galerija.slika!),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(12)),
+                          ),
+                          child: const Center(child: Text('Nema slike')),
                         ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        ),
-                        child: const Center(child: Text('Nema slike')),
-                      ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("ID: ${galerija.galerijaId}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
-                    Text("Administrator: $adminIme"),
-                  ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
-
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("ID: ${galerija.galerijaId}",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
+                      Text("Administrator: $adminIme"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

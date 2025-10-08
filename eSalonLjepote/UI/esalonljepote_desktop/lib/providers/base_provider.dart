@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:esalonljepote_desktop/models/narudzba.dart';
 import 'package:esalonljepote_desktop/models/search_result.dart';
 import 'package:esalonljepote_desktop/utils/util.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
- 
+
 abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint;
   String? totalUrl;
- 
+
   BaseProvider(String endpoint) : _endpoint = endpoint {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "https://localhost:44314/");
@@ -18,18 +19,18 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
   Future<SearchResult<T>> get({dynamic filter}) async {
     var url = "$_baseUrl$_endpoint";
- 
+
     if (filter != null) {
       var queryString = getQueryString(filter);
       url = "$url?$queryString";
     }
- 
+
     var uri = Uri.parse(url);
     var headers = createHeaders();
- 
+
     try {
       var response = await http.get(uri, headers: headers);
- 
+
       if (isValidResponse(response)) {
         var data = jsonDecode(response.body);
         var result = SearchResult<T>();
@@ -46,18 +47,18 @@ abstract class BaseProvider<T> with ChangeNotifier {
       rethrow;
     }
   }
- 
+
   T fromJson(dynamic data);
- 
+
   Future<T> update(int id, [dynamic request]) async {
     var url = "$_baseUrl$_endpoint/$id";
     var uri = Uri.parse(url);
     var headers = createHeaders();
- 
+
     try {
       var jsonRequest = jsonEncode(request);
       var response = await http.put(uri, headers: headers, body: jsonRequest);
- 
+
       if (isValidResponse(response)) {
         var data = jsonDecode(response.body);
         return fromJson(data);
@@ -69,23 +70,23 @@ abstract class BaseProvider<T> with ChangeNotifier {
       rethrow;
     }
   }
- 
+
   Future<T> insert(dynamic request) async {
     var url = "$_baseUrl$_endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
- 
+
     try {
       var jsonRequest = jsonEncode(request);
       print("Request URL: $url");
       print("Request Headers: $headers");
       print("Request Body: $jsonRequest");
- 
+
       var response = await http.post(uri, headers: headers, body: jsonRequest);
- 
+
       print("Response Status Code: ${response.statusCode}");
       print("Response Body: ${response.body}");
- 
+
       if (isValidResponse(response)) {
         var data = jsonDecode(response.body);
         return fromJson(data);
@@ -97,14 +98,14 @@ abstract class BaseProvider<T> with ChangeNotifier {
       rethrow;
     }
   }
- 
+
   Future<T> delete(int? id) async {
     var url = "$_baseUrl$_endpoint/$id";
     var uri = Uri.parse(url);
     var headers = createHeaders();
- 
+
     Response response = await http.delete(uri, headers: headers);
- 
+
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       notifyListeners();
@@ -113,7 +114,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Unknown error");
     }
   }
- 
+
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';
@@ -136,7 +137,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     });
     return query;
   }
- 
+
   bool isValidResponse(Response response) {
     if (response.statusCode < 300) {
       return true;
@@ -147,26 +148,26 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Something bad happened, please try again");
     }
   }
- 
+
   Map<String, String> createHeaders() {
     String username = Authorization.username ?? "";
     String password = Authorization.password ?? "";
- 
+
     print("Passed credentials: $username, $password");
- 
+
     String Basic = "Basic ${base64Encode(utf8.encode('$username:$password'))}";
- 
+
     return {
       "Content-Type": "application/json",
       "Authorization": Basic,
     };
   }
- 
+
   Future<T> getById(int? id) async {
     var url = "$_baseUrl$_endpoint/$id";
     var uri = Uri.parse(url);
     var headers = createHeaders();
- 
+
     Response response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
@@ -175,5 +176,40 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Unknown error");
     }
   }
- 
+
+  Future<List<Narudzba>> getIzvjestajHistorijeNarudzbi(
+      {Map<String, dynamic>? filter}) async {
+    var url = "$_baseUrl$_endpoint/Izvjestaj";
+
+    if (filter != null) {
+      var queryString = getQueryString(filter);
+      url = "$url?$queryString";
+    }
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    try {
+      var response = await http.get(uri, headers: headers);
+
+      if (isValidResponse(response)) {
+        var data = jsonDecode(response.body);
+        List<Narudzba> lista = [];
+        var resultList = data['result'] as List<dynamic>;
+
+        for (var item in resultList) {
+          lista.add(fromJson(item) as Narudzba);
+        }
+
+        return lista;
+      } else {
+        throw Exception("Greška pri dohvatu izvještaja");
+      }
+    } catch (e) {
+      print("Greška: $e");
+      rethrow;
+    }
+  }
+
+
 }

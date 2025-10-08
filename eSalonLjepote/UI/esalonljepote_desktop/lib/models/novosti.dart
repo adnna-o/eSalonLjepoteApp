@@ -14,16 +14,15 @@ class Novosti {
   Novosti({
     this.novostiId,
     this.naziv,
-    this.opisNovosti,
+    this.opisNovisti,
     this.datumObjave,
     this.korisnikId,
     this.aktivna,
-
   });
 
   int? novostiId;
   String? naziv;
-  String? opisNovosti;
+  String? opisNovisti;
   DateTime? datumObjave;
   int? korisnikId;
   int? aktivna;

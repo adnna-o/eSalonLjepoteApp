@@ -60,6 +60,59 @@ namespace eSalonLjepote.Service.Service
                 {
                     filteredQuery = filteredQuery.Where(n => n.IznosNarudzbe == search.IznosNarudzbe);
                 }
+               
+
+                if (!string.IsNullOrWhiteSpace(search.KupacImePrezime))
+                {
+                    filteredQuery = filteredQuery.Where(n =>
+                        n.Korisnik.Ime.Contains(search.KupacImePrezime) ||
+                        n.Korisnik.Prezime.Contains(search.KupacImePrezime)
+                    );
+                }
+
+                if (!string.IsNullOrWhiteSpace(search.SadrzajNarudzbe))
+                {
+                    filteredQuery = filteredQuery.Where(n =>
+                        n.Proizvod.NazivProizvoda.Contains(search.SadrzajNarudzbe)
+                    );
+                }
+
+                if (search.DatumOd.HasValue)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.DatumNarudzbe.Date >= search.DatumOd.Value.Date);
+                }
+
+                if (search.DatumDo.HasValue)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.DatumNarudzbe.Date <= search.DatumDo.Value.Date);
+                }
+
+                if (search.IznosOd.HasValue)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.IznosNarudzbe >= search.IznosOd.Value);
+                }
+
+                if (search.IznosDo.HasValue)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.IznosNarudzbe <= search.IznosDo.Value);
+                }
+
+                // Ovi postojeći filteri se mogu zadržati ako su potrebni
+                if (search.DatumNarudzbe != default(DateTime))
+                {
+                    filteredQuery = filteredQuery.Where(n => n.DatumNarudzbe.Date == search.DatumNarudzbe.Date);
+                }
+
+                if (search.KolicinaProizvoda != 0)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.KolicinaProizvoda == search.KolicinaProizvoda);
+                }
+
+                if (search.IznosNarudzbe.HasValue)
+                {
+                    filteredQuery = filteredQuery.Where(n => n.IznosNarudzbe == search.IznosNarudzbe);
+                }
+
             }
             return filteredQuery;
         }

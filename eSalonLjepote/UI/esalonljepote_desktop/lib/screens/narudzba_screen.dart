@@ -43,7 +43,6 @@ class _NarudzbaScreen extends State<NarudzbaScreen> {
   SearchResult<Proizvod>? proizvodResult;
   SearchResult<Placanje>? placanjeResult;
 
-
   TextEditingController _imeKlijentaController = TextEditingController();
   TextEditingController _prezimeKlijentaController = TextEditingController();
   TextEditingController _nazivUslugeController = TextEditingController();
@@ -60,7 +59,6 @@ class _NarudzbaScreen extends State<NarudzbaScreen> {
     _proizvodProvider = context.read<ProizvodProvider>();
     _placanjeProvider = context.read<PlacanjeProvider>();
 
-
     _fetchNarudzba();
   }
 
@@ -71,13 +69,11 @@ class _NarudzbaScreen extends State<NarudzbaScreen> {
     var narudzbaData = await _narudzbaProvider.get();
     var placanjeData = await _placanjeProvider.get();
 
-
     setState(() {
       korisnikResult = korisnikData;
       proizvodResult = proizvodData;
       narudzbaResult = narudzbaData;
       placanjeResult = placanjeData;
-
     });
   }
 
@@ -265,7 +261,7 @@ class _NarudzbaScreen extends State<NarudzbaScreen> {
                     .firstWhere((p) => p.korisnikId == e.korisnikId);
                 var proizvodNaziv = proizvodResult?.result
                     .firstWhere((p) => p.proizvodId == e.proizvodId);
-                    var nacinPlacanjaNaziv = placanjeResult?.result
+                var nacinPlacanjaNaziv = placanjeResult?.result
                     .firstWhere((p) => p.placanjeId == e.placanjeId);
 
                 return DataRow(cells: [

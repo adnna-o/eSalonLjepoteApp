@@ -1,12 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:esalonljepote_desktop/models/korisnik_uloga.dart';
 
- 
 /// This allows the `User` class to access private members in
 /// the generated file. The value for this is *.g.dart, where
 /// the star denotes the source file name.
 part 'korisnik.g.dart';
- 
+
 /// An annotation for the code generator to know that this class needs the
 /// JSON serialization logic to be generated.
 @JsonSerializable()
@@ -24,9 +23,8 @@ class Korisnik {
       this.lozinkaHash,
       this.telefon,
       this.slika,
-      this.korisnikUlogas = const []
-      });
- 
+      this.korisnikUlogas = const []});
+
   int? korisnikId;
   String? ime;
   String? prezime;
@@ -40,9 +38,9 @@ class Korisnik {
   String? datumRodjenja;
   String? slika;
   List<KorisnikUloga> korisnikUlogas;
- 
+
   factory Korisnik.fromJson(Map<String, dynamic> json) =>
       _$KorisnikFromJson(json);
- 
+
   Map<String, dynamic> toJson() => _$KorisnikToJson(this);
 }

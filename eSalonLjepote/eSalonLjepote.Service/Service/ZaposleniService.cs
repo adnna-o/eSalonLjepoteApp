@@ -34,6 +34,14 @@ namespace eSalonLjepote.Service.Service
             {
                 filteredQuery = filteredQuery.Where(x => x.Zanimanje.Contains(search.Zanimanje.ToLower()));
             }
+            if (!string.IsNullOrWhiteSpace(search?.ImeZaposlenika))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Korisnik.Ime.Contains(search.ImeZaposlenika.ToLower()));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.PrezimeZaposlenika))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Korisnik.Prezime.Contains(search.PrezimeZaposlenika.ToLower()));
+            }
             return filteredQuery;
         }
         }

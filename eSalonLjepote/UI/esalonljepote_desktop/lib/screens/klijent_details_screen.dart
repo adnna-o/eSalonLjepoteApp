@@ -56,7 +56,6 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
     _klijentiProvider = context.read<KlijentiProvider>();
     _korisnikProvider = context.read<KorisnikProvider>();
 
-
     _fecthKorisnici();
     _fetchKlijenti();
   }
@@ -82,7 +81,6 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
     }
   }
 
- 
   Future<void> _fecthKorisnici() async {
     try {
       var korisnikData = await _korisnikProvider.get();
@@ -95,7 +93,6 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
     }
   }
 
- 
   void _showSuccessMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -112,11 +109,11 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
 
       final mutableFormData = Map<String, dynamic>.from(formData);
 
-     /* if (mutableFormData['klijentId'] != null) {
+      /* if (mutableFormData['klijentId'] != null) {
         mutableFormData['klijentId'] =
             int.tryParse(mutableFormData['klijentId'] as String) ?? 0;
       }*/
-     
+
       if (mutableFormData['korisnikId'] != null) {
         mutableFormData['korisnikId'] =
             int.tryParse(mutableFormData['korisnikId'] as String) ?? 0;
@@ -179,7 +176,7 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.klijenti== null
+                  widget.klijenti == null
                       ? 'Adding a new appointment'
                       : 'Updating appointment',
                   style: TextStyle(
@@ -188,7 +185,6 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-               
                 FormBuilderDropdown<String>(
                     name: 'korisnikId',
                     decoration: InputDecoration(
@@ -222,7 +218,6 @@ class _KlijentiDetailsScreen extends State<KlijentiDetailsScreen> {
                       return null;
                     }),
                 SizedBox(height: 16),
-               
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _submitForm,

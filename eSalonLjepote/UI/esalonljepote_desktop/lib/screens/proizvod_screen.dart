@@ -190,7 +190,7 @@ class _ProizvodScreen extends State<ProizvodScreen> {
             DataColumn(label: Text('Cijena')),
           ],
           rows: proizvodResult?.result.map((Proizvod e) {
-               /* var klijentIme = klijentiResult?.result
+                /* var klijentIme = klijentiResult?.result
                     .firstWhere((p) => p.klijentId == e.klijentId);
                 var zaposleni = zaposleniResult?.result
                     .firstWhere((p) => p.zaposleniId == e.zaposleniId);
@@ -206,22 +206,24 @@ class _ProizvodScreen extends State<ProizvodScreen> {
                 return DataRow(cells: [
                   DataCell(Text(e.nazivProizvoda.toString())),
                   DataCell(
-                 e.slika != null && e.slika!.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        child: Image.memory(
-                          base64Decode(e.slika!),
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        ),
-                        child: const Center(child: Text('Nema slike')),
-                      ),
-              ),
+                    e.slika != null && e.slika!.isNotEmpty
+                        ? ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(12)),
+                            child: Image.memory(
+                              base64Decode(e.slika!),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12)),
+                            ),
+                            child: const Center(child: Text('Nema slike')),
+                          ),
+                  ),
                   DataCell(Text(e.cijena.toString())),
                 ]);
               }).toList() ??

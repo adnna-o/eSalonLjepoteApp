@@ -20,6 +20,10 @@ Narudzba _$NarudzbaFromJson(Map<String, dynamic> json) => Narudzba(
               ?.map((e) => Korisnik.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      proizvod: (json['proizvod'] as List<dynamic>?)
+              ?.map((e) => Proizvod.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$NarudzbaToJson(Narudzba instance) => <String, dynamic>{
@@ -31,4 +35,6 @@ Map<String, dynamic> _$NarudzbaToJson(Narudzba instance) => <String, dynamic>{
       'kolicinaProizvoda': instance.kolicinaProizvoda,
       'iznosNarudzbe': instance.iznosNarudzbe,
       'korisnik': instance.korisnik,
+      'proizvod': instance.proizvod,
+
     };

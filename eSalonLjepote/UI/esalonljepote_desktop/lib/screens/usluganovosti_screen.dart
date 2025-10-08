@@ -15,8 +15,10 @@ import 'package:esalonljepote_desktop/providers/proizvod_provider.dart';
 import 'package:esalonljepote_desktop/providers/termini_provider.dart';
 import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
 import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
+import 'package:esalonljepote_desktop/screens/novosti_details_screen.dart';
 import 'package:esalonljepote_desktop/screens/proizvod_datails_screen.dart';
 import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
+import 'package:esalonljepote_desktop/screens/usluga_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -51,7 +53,6 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
 
     _fetchNovosti();
     _fetchUsluga();
-
   }
 
 //buduca funkcija
@@ -85,8 +86,8 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
               onPressed: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ProizvodDetailsScreen(
-                      onProizvodUpdated: _fetchUsluga,
+                    builder: (context) => UslugaDetailsScreen(
+                      onUslugaUpdate: _fetchUsluga,
                     ),
                   ),
                 );
@@ -96,7 +97,7 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
               },
               child: Text("Add new Usluga!"),
             ),
-            Expanded(child: _buildNovostiListView()),
+           Expanded(child: _buildNovostiListView()),
             const SizedBox(
               height: 8.0,
             ),
@@ -104,8 +105,8 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
               onPressed: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ProizvodDetailsScreen(
-                      onProizvodUpdated: _fetchNovosti,
+                    builder: (context) => NovostiDetailsScreen(
+                      onDataChanged: _fetchNovosti,
                     ),
                   ),
                 );
@@ -208,9 +209,9 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
 */
                 return DataRow(cells: [
                   DataCell(Text(e.naziv.toString())),
-                  DataCell(Text(e.opisNovosti.toString())),
+                  DataCell(Text(e.opisNovisti.toString())),
                   DataCell(Text(e.datumObjave.toString())),
-                  DataCell(Text((e.aktivna.toString()))),
+                 DataCell(Text(e.aktivna == 1 || e.aktivna == true ? 'Da' : 'Ne')),
                 ]);
               }).toList() ??
               [],

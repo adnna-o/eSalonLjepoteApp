@@ -3,6 +3,8 @@ using eSalonLjepote.Model.Request;
 using eSalonLjepote.Service.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using eSalonLjepote.Model.Models;
+using eSalonLjepote.Model;
 
 namespace eSalonLjepote.API.Controllers
 {
@@ -14,5 +16,12 @@ namespace eSalonLjepote.API.Controllers
         {
 
         }
+        [HttpGet("Izvjestaj")]
+        public async Task<PagedResult<eSalonLjepote.Model.Models.Narudzba>> GetIzvjestaj([FromQuery] NarudzbaSearchRequest? search = null)
+        {
+            return await _service.Get(search);
+        }
+
+
     }
 }

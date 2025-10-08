@@ -19,29 +19,24 @@ import 'package:esalonljepote_desktop/providers/korisnik_uloga_provider.dart';
 import 'package:esalonljepote_desktop/providers/uloga_provider.dart';
 import 'package:esalonljepote_desktop/screens/home_screen.dart';
 
-
-
 void main() {
   runApp(MultiProvider(
-    providers:[
-      ChangeNotifierProvider(create:(_)=>KorisnikProvider()),
-      ChangeNotifierProvider(create:(_)=>UlogaProvider()),
-      ChangeNotifierProvider(create:(_)=>KorisnikUlogaProvider()),
-      ChangeNotifierProvider(create:(_)=>TerminiProvider()),
-      ChangeNotifierProvider(create:(_)=>KlijentiProvider()),
-      ChangeNotifierProvider(create:(_)=>ZaposleniProvider()),
-      ChangeNotifierProvider(create:(_)=>SalonLjepoteProvider()),
-      ChangeNotifierProvider(create:(_)=>UslugaProvider()),
-      ChangeNotifierProvider(create:(_)=>GalerijaProvider()),
-      ChangeNotifierProvider(create:(_)=>AdministratorProvider()),
-      ChangeNotifierProvider(create:(_)=>ProizvodProvider()),
-      ChangeNotifierProvider(create:(_)=>NovostiProvider()),
-      ChangeNotifierProvider(create:(_)=>NarudzbaProvider()),
-      ChangeNotifierProvider(create:(_)=>PlacanjeProvider()),
-
-
-
-
+    providers: [
+      ChangeNotifierProvider(create: (_) => KorisnikProvider()),
+      ChangeNotifierProvider(create: (_) => UlogaProvider()),
+      ChangeNotifierProvider(create: (_) => KorisnikUlogaProvider()),
+      ChangeNotifierProvider(create: (_) => TerminiProvider()),
+      ChangeNotifierProvider(create: (_) => KlijentiProvider()),
+      ChangeNotifierProvider(create: (_) => ZaposleniProvider()),
+      ChangeNotifierProvider(create: (_) => SalonLjepoteProvider()),
+      ChangeNotifierProvider(create: (_) => UslugaProvider()),
+      ChangeNotifierProvider(create: (_) => GalerijaProvider()),
+      ChangeNotifierProvider(create: (_) => AdministratorProvider()),
+      ChangeNotifierProvider(create: (_) => ProizvodProvider()),
+      ChangeNotifierProvider(create: (_) => NovostiProvider()),
+      ChangeNotifierProvider(create: (_) => NarudzbaProvider()),
+      ChangeNotifierProvider(create: (_) => PlacanjeProvider()),
+      
     ],
     child: const MyApp(),
   ));
@@ -49,7 +44,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -65,7 +59,6 @@ class MyApp extends StatelessWidget {
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -76,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
   late KorisnikProvider _korisnikProvider;
   int? loggedInUserID;
   bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
@@ -95,23 +87,18 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = true;
     });
-
     var username = _usernameController.text;
     var password = _passwordController.text;
-
     Authorization.username = username;
     Authorization.password = password;
-
     try {
       Authorization.korisnik = await _korisnikProvider.Authenticate();
-
       if (Authorization.korisnik?.korisnikUlogas
               .any((role) => role.uloga?.nazivUloge == "Admin") ==
           true) {
         setState(() {
           loggedInUserID = Authorization.korisnik?.korisnikId;
         });
-
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => WelcomeScreen(),
@@ -155,7 +142,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     _korisnikProvider = context.read<KorisnikProvider>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Login admin!"),
@@ -166,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Opacity(
               opacity: 0.9,
               child: Image.asset(
-                "assets/images/images.png",
+                "assets/images/LoginBackground.jpg",
                 fit: BoxFit.cover,
               ),
             ),
@@ -263,5 +249,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-

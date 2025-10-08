@@ -11,6 +11,9 @@ namespace eSalonLjepote.Model.Request.SearchRequest
         public DateTime? DatumZaposlenja { get; set; }
 
         public string? Zanimanje { get; set; }
+        public string? ImeZaposlenika { get; set; }
+        public string? PrezimeZaposlenika { get; set; }
+        
         public bool? isKorisnikIncluded { get; set; }
 
     }

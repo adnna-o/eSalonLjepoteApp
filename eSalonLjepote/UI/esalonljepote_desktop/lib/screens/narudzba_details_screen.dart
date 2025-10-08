@@ -58,13 +58,15 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
 
   @override
   void initState() {
+    String todayFormatted =
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
     super.initState();
     _initialValue = {
       'narudzbaId': widget.narudzba?.narudzbaId,
       'korisnikId': widget.narudzba?.narudzbaId,
       'proizvodId': widget.narudzba?.proizvodId,
       'placanjeId': widget.narudzba?.placanjeId,
-      'datumNarudzbe': widget.narudzba?.datumNarudzbe,
+      'datumNarudzbe': widget.narudzba?.datumNarudzbe ?? todayFormatted,
       'kolicinaProizvoda': widget.narudzba?.kolicinaProizvoda,
       'iznosNarudzbe': widget.narudzba?.iznosNarudzbe,
     };
@@ -162,15 +164,17 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
             int.tryParse(mutableFormData['kolicinaProizvoda'].toString()) ?? 0;
       }
 
-      if (mutableFormData['cijena'] != null) {
-        mutableFormData['cijena'] = double.tryParse(
-                mutableFormData['cijena'].toString().replaceAll(',', '.')) ??
+      if (mutableFormData['iznosNarudzbe'] != null) {
+        mutableFormData['iznosNarudzbe'] = double.tryParse(
+                mutableFormData['iznosNarudzbe']
+                    .toString()
+                    .replaceAll(',', '.')) ??
             0.0;
       }
 
       mutableFormData['iznosNarudzbe'] =
           (mutableFormData['kolicinaProizvoda'] as int) *
-              (mutableFormData['cijena'] as double);
+              (mutableFormData['iznosNarudzbe'] as double);
 
       try {
         if (widget.narudzba == null) {
@@ -237,6 +241,38 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
                     fontSize: 24,
                   ),
                 ),
+                FormBuilderDropdown<String>(
+                    name: 'korisnikId',
+                    decoration: InputDecoration(
+                      labelText: 'Klijent',
+                    ),
+                    items: korisnikResult?.map((klijent) {
+                          var korisnik = korisnikResult?.firstWhere(
+                            (k) => k.korisnikId == klijent.korisnikId,
+                          );
+
+                          var displayText = korisnik != null
+                              ? "${korisnik.ime} ${korisnik.prezime}"
+                              : "Nepoznato";
+                          return DropdownMenuItem<String>(
+                            value: klijent.korisnikId.toString(),
+                            child: Text(displayText),
+                          );
+                        }).toList() ??
+                        [],
+                    initialValue: _initialValue['korisnikId']?.toString(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedKorisnikId = value;
+                      });
+                      print("Odabrani klijentId: $_selectedKorisnikId");
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ovo polje je obavezno!';
+                      }
+                      return null;
+                    }),
                 SizedBox(height: 16.0),
                 FormBuilderTextField(
                   decoration: InputDecoration(
@@ -247,22 +283,6 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
                   name: "datumNarudzbe",
                   readOnly: true,
                   initialValue: _initialValue['datumNarudzbe'],
-                  onTap: () async {
-                    DateTime? selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-
-                    if (selectedDate != null) {
-                      String formattedDate =
-                          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-
-                      _formKey.currentState?.fields['datumNarudzbe']
-                          ?.didChange(formattedDate);
-                    }
-                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Ovo polje je obavezno! Datum u formatu yyyy-MM-dd';
@@ -271,51 +291,68 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
                   },
                 ),
                 SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: FormBuilderTextField(
-                          name: "kolicinaProizvoda",
-                          decoration: InputDecoration(
-                            labelText: "Količina",
-                            labelStyle:
-                                const TextStyle(color: Colors.orangeAccent),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                                  const BorderSide(color: Colors.orangeAccent),
-                            ),
-                          ),
-                          keyboardType: TextInputType
-                              .number, 
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Količina je obavezna.';
-                            }
-                            final parsed = int.tryParse(value);
-                            if (parsed == null) {
-                              return 'Unesite ispravan cijeli broj.';
-                            }
-                            if (parsed <= 0) {
-                              return 'Količina mora biti veća od 0.';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
+                FormBuilderDropdown<String>(
+                    name: 'proizvodId',
+                    decoration: InputDecoration(
+                      labelText: 'Proizvod',
+                    ),
+                    items: proizvodResult?.map((proizvod) {
+                          var proizvodi = proizvodResult?.firstWhere(
+                            (k) => k.proizvodId == proizvod.proizvodId,
+                          );
+
+                          var displayText = proizvodi != null
+                              ? "${proizvodi.nazivProizvoda}"
+                              : "Nepoznato";
+                          return DropdownMenuItem<String>(
+                            value: proizvod.proizvodId.toString(),
+                            child: Text(displayText),
+                          );
+                        }).toList() ??
+                        [],
+                    initialValue: _initialValue['proizvodId']?.toString(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedProizvodId = value;
+                      });
+
+                      // Pronađi odabrani proizvod
+                      var selectedProizvod = proizvodResult?.firstWhere(
+                        (p) => p.proizvodId.toString() == value,
+                      );
+
+                      if (selectedProizvod != null) {
+                        // Postavi cijenu u formi
+                        _formKey.currentState?.fields['iznosNarudzbe']
+                            ?.didChange(
+                                selectedProizvod.cijena?.toStringAsFixed(2));
+
+                        // Automatski izračunaj iznos ako je već unesena količina
+                        var kolicinaStr = _formKey.currentState
+                                ?.fields['kolicinaProizvoda']?.value ??
+                            '1';
+                        var kolicina =
+                            int.tryParse(kolicinaStr.toString()) ?? 1;
+
+                        var iznos = (selectedProizvod.cijena ?? 0) * kolicina;
+
+                        _formKey.currentState?.fields['iznosNarudzbe']
+                            ?.didChange(iznos.toStringAsFixed(2));
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ovo polje je obavezno!';
+                      }
+                      return null;
+                    }),
+                SizedBox(height: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FormBuilderTextField(
-                      name: 'cijena',
+                      name: 'iznosNarudzbe',
+                      readOnly: true,
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
@@ -356,73 +393,44 @@ class _NarudzbaDetailsScreen extends State<NarudzbaDetailsScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: 8,
+                  height: 16,
                 ),
-                FormBuilderDropdown<String>(
-                    name: 'korisnikId',
-                    decoration: InputDecoration(
-                      labelText: 'Klijent',
-                    ),
-                    items: korisnikResult?.map((klijent) {
-                          var korisnik = korisnikResult?.firstWhere(
-                            (k) => k.korisnikId == klijent.korisnikId,
-                          );
-
-                          var displayText = korisnik != null
-                              ? "${korisnik.ime} ${korisnik.prezime}"
-                              : "Nepoznato";
-                          return DropdownMenuItem<String>(
-                            value: klijent.korisnikId.toString(),
-                            child: Text(displayText),
-                          );
-                        }).toList() ??
-                        [],
-                    initialValue: _initialValue['korisnikId']?.toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedKorisnikId = value;
-                      });
-                      print("Odabrani klijentId: $_selectedKorisnikId");
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Ovo polje je obavezno!';
-                      }
-                      return null;
-                    }),
-                SizedBox(height: 16),
-                FormBuilderDropdown<String>(
-                    name: 'proizvodId',
-                    decoration: InputDecoration(
-                      labelText: 'Proizvod',
-                    ),
-                    items: proizvodResult?.map((proizvod) {
-                          var proizvodi = proizvodResult?.firstWhere(
-                            (k) => k.proizvodId == proizvod.proizvodId,
-                          );
-
-                          var displayText = proizvodi != null
-                              ? "${proizvodi.nazivProizvoda}"
-                              : "Nepoznato";
-                          return DropdownMenuItem<String>(
-                            value: proizvod.proizvodId.toString(),
-                            child: Text(displayText),
-                          );
-                        }).toList() ??
-                        [],
-                    initialValue: _initialValue['proizvodId']?.toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedKorisnikId = value;
-                      });
-                      print("Odabrani klijentId: $_selectedProizvodId");
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Ovo polje je obavezno!';
-                      }
-                      return null;
-                    }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FormBuilderTextField(
+                          name: "kolicinaProizvoda",
+                          decoration: InputDecoration(
+                            labelText: "Količina",
+                            labelStyle:
+                                const TextStyle(color: Colors.orangeAccent),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  const BorderSide(color: Colors.orangeAccent),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Količina je obavezna.';
+                            }
+                            final parsed = int.tryParse(value);
+                            if (parsed == null) {
+                              return 'Unesite ispravan cijeli broj.';
+                            }
+                            if (parsed <= 0) {
+                              return 'Količina mora biti veća od 0.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 16),
                 FormBuilderDropdown<String>(
                     name: 'placanjeId',

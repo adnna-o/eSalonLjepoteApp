@@ -192,7 +192,7 @@ class _ProizvodDetailsScreenState extends State<ProizvodDetailsScreen> {
         key: _formKey,
         initialValue: {
           'proizvodId': widget.proizvod?.proizvodId?.toString(),
-          'nayivProizvoda': widget.proizvod?.nazivProizvoda,
+          'nazivProizvoda': widget.proizvod?.nazivProizvoda,
           'slika': widget.proizvod?.slika,
           'cijena': widget.proizvod?.cijena,
         },

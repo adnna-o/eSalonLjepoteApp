@@ -9,7 +9,7 @@ part of 'novosti.dart';
 Novosti _$NovostiFromJson(Map<String, dynamic> json) => Novosti(
       novostiId: (json['novostiId'] as num?)?.toInt(),
       naziv: json['naziv'] as String?,
-      opisNovosti: json['opisNovosti'] as String?,
+      opisNovisti: json['opisNovisti'] as String?,
       datumObjave: json['datumObjave'] == null
           ? null
           : DateTime.parse(json['datumObjave'] as String),
@@ -20,7 +20,7 @@ Novosti _$NovostiFromJson(Map<String, dynamic> json) => Novosti(
 Map<String, dynamic> _$NovostiToJson(Novosti instance) => <String, dynamic>{
       'novostiId': instance.novostiId,
       'naziv': instance.naziv,
-      'opisNovosti': instance.opisNovosti,
+      'opisNovisti': instance.opisNovisti,
       'datumObjave': instance.datumObjave?.toIso8601String(),
       'korisnikId': instance.korisnikId,
       'aktivna': instance.aktivna,

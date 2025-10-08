@@ -72,7 +72,6 @@ class _TerminDetailsScreen extends State<TerminDetailsScreen> {
     _klijentiProvider = context.read<KlijentiProvider>();
     _korisnikProvider = context.read<KorisnikProvider>();
 
-
     _fecthKorisnici();
 
     _fetchUsluga();
