@@ -14,4 +14,6 @@ public partial class Proizvod
     public decimal Cijena { get; set; }
 
     public virtual ICollection<Narudzba> Narudzbas { get; } = new List<Narudzba>();
+    public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
+
 }

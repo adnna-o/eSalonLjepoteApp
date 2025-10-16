@@ -1,14 +1,17 @@
-import 'package:esalonljepote_desktop/models/salonLjepote.dart';
-import 'package:esalonljepote_desktop/providers/salonLjepote_provider.dart';
-import 'package:esalonljepote_desktop/screens/galerija_screen.dart';
-import 'package:esalonljepote_desktop/screens/home_screen.dart';
-import 'package:esalonljepote_desktop/screens/klijent_screen.dart';
-import 'package:esalonljepote_desktop/screens/narudzba_screen.dart';
-import 'package:esalonljepote_desktop/screens/proizvod_screen.dart';
-import 'package:esalonljepote_desktop/screens/report_screen.dart';
-import 'package:esalonljepote_desktop/screens/termin_screen.dart';
-import 'package:esalonljepote_desktop/screens/usluganovosti_screen.dart';
-import 'package:esalonljepote_desktop/screens/zaposleni_screen.dart';
+import 'package:esalonljepote_mobile/models/klijenti.dart';
+import 'package:esalonljepote_mobile/models/korisnik.dart';
+import 'package:esalonljepote_mobile/models/salonLjepote.dart';
+import 'package:esalonljepote_mobile/models/search_result.dart';
+import 'package:esalonljepote_mobile/models/usluga.dart';
+import 'package:esalonljepote_mobile/models/zaposleni.dart';
+import 'package:esalonljepote_mobile/providers/klijenti_provider.dart';
+import 'package:esalonljepote_mobile/providers/korisnik_provider.dart';
+import 'package:esalonljepote_mobile/providers/salonLjepote_provider.dart';
+import 'package:esalonljepote_mobile/providers/usluga_provider.dart';
+import 'package:esalonljepote_mobile/providers/zaposleni_provider.dart';
+import 'package:esalonljepote_mobile/screens/home_screen.dart';
+import 'package:esalonljepote_mobile/screens/proizvod_screen.dart';
+import 'package:esalonljepote_mobile/screens/termini_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -26,12 +29,14 @@ class MasterScreenWidget extends StatefulWidget {
 
 class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   late SalonLjepoteProvider _salonLjepoteProvider;
+
   SalonLjepote? _salonLjepote;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _salonLjepoteProvider = context.read<SalonLjepoteProvider>();
+
     _fetchSalonLjepoteDetails();
   }
 
@@ -41,6 +46,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
       _salonLjepote = data.result?.first;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +120,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
           SizedBox(width: 16.0),
           Row(
             children: [
-              Icon(Icons.location_on,
-                  color: Color.fromARGB(255, 132, 77, 97)),
+              Icon(Icons.location_on, color: Color.fromARGB(255, 132, 77, 97)),
               SizedBox(width: 8.0),
               Text(
                 "${_salonLjepote?.adresa}",
@@ -133,21 +138,22 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildNavIcon(context, Icons.home, WelcomeScreen(), "Home"),
+        _buildNavIcon(context, Icons.home, HomeScreen(), "Home"),
         _buildNavIcon(context, Icons.schedule, TerminScreen(), "Termini"),
-        _buildNavIcon(context, Icons.photo_library, GalerijaScreen(), "Galerija"),
-        _buildNavIcon(context, Icons.shopping_bag, ProizvodScreen(), "Proizvodi"),
-        _buildNavIcon(context, Icons.newspaper, UslugaNovostiScreen(), "Usluge i novosti"),
-        _buildNavIcon(context, Icons.people, KlijentScreen(), "Klijenti"),
-        _buildNavIcon(context, Icons.receipt_long, NarudzbaScreen(), "Narudzbe"),
-        _buildNavIcon(context, Icons.history, ReportScreen(), "Historija"),
-        _buildNavIcon(context, Icons.people_alt, ZaposleniScreen(), "Zaposleni"),
-
+        _buildNavIcon(context, Icons.photo_library, ProizvodScreen(), "Pregled prozivoda"),
+        _buildNavIcon(context, Icons.shopping_bag, HomeScreen(), "Proizvodi"),
+        _buildNavIcon(
+            context, Icons.newspaper, HomeScreen(), "Usluge i novosti"),
+        _buildNavIcon(context, Icons.people, HomeScreen(), "Klijenti"),
+        _buildNavIcon(context, Icons.receipt_long, HomeScreen(), "Narudzbe"),
+        _buildNavIcon(context, Icons.history, HomeScreen(), "Historija"),
+        _buildNavIcon(context, Icons.people_alt, HomeScreen(), "Zaposleni"),
       ],
     );
   }
 
-  Widget _buildNavIcon(BuildContext context, IconData icon, Widget screen, String tooltip) {
+  Widget _buildNavIcon(
+      BuildContext context, IconData icon, Widget screen, String tooltip) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(

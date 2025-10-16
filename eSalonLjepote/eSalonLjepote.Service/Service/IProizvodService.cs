@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace eSalonLjepote.Service.Service
 {
-    public interface IProizvodService : ICRUDService<Model.Models.Proizvod, ProizvodSearchRequest, ProizvodInsertRequest, ProizvodUpdateRequest>
+    public interface IProizvodService : ICRUDProizvodiService<Model.Models.Proizvod, ProizvodSearchRequest, ProizvodInsertRequest, ProizvodUpdateRequest>
     {
 
+        List<Model.Models.Proizvod> GetPreporuceniProizvodi(int id);
+        List<Model.Models.Proizvod> GetRecommendedProizvods();
+
     }
-    
+
 }

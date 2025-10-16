@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:esalonljepote_mobile/models/narudzba.dart';
+import 'package:esalonljepote_mobile/models/proizvod.dart';
+import 'package:esalonljepote_mobile/models/recenzije.dart';
 import 'package:esalonljepote_mobile/models/search_result.dart';
 import 'package:esalonljepote_mobile/utils/util.dart';
 
@@ -176,7 +179,56 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
- 
+   Future<List<Proizvod>> fetchRecommendedProizvodi() async {
+    try {
+      final response = await http.get(Uri.parse('$totalUrl/preporuceni'),
+          headers: createHeaders());
+      if (isValidResponse(response)) {
+        return (jsonDecode(response.body) as List)
+            .map((item) => Proizvod.fromJson(item))
+            .toList();
+      } else {
+        throw Exception('Invalid response: ${response.body}');
+      }
+    } catch (e) {
+      print('Error fetching recommended doctors: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Narudzba>> getIzvjestajHistorijeNarudzbi(
+      {Map<String, dynamic>? filter}) async {
+    var url = "$_baseUrl$_endpoint/Izvjestaj";
+
+    if (filter != null) {
+      var queryString = getQueryString(filter);
+      url = "$url?$queryString";
+    }
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    try {
+      var response = await http.get(uri, headers: headers);
+
+      if (isValidResponse(response)) {
+        var data = jsonDecode(response.body);
+        List<Narudzba> lista = [];
+        var resultList = data['result'] as List<dynamic>;
+
+        for (var item in resultList) {
+          lista.add(fromJson(item) as Narudzba);
+        }
+
+        return lista;
+      } else {
+        throw Exception("Greška pri dohvatu izvještaja");
+      }
+    } catch (e) {
+      print("Greška: $e");
+      rethrow;
+    }
+  }
 
 
 }

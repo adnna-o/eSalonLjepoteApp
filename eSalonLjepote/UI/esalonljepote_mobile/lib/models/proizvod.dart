@@ -22,6 +22,8 @@ class Proizvod {
   String? nazivProizvoda;
   String? slika;
   double? cijena;
+  double? averageRating;
+
 
   factory Proizvod.fromJson(Map<String, dynamic> json) =>
       _$ProizvodFromJson(json);

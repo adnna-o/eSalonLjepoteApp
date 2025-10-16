@@ -15,6 +15,7 @@ namespace eSalonLjepote.Model.Models
         public byte[]? Slika { get; set; }
 
         public decimal Cijena { get; set; }
+        public double? AverageRating { get; set; }
 
     }
 }
