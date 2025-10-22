@@ -8,13 +8,12 @@ part 'korpa.g.dart';
 @JsonSerializable()
 class Korpa {
   int? korpaId;
-  int? klijentId;
+  int? korisnikId;
   int? proizvodId;
-  double? cijena;
   int? kolicina;
   Proizvod? proizvod;
 
-  Korpa(this.korpaId, this.klijentId, this.proizvodId, this.cijena, this.kolicina,
+  Korpa(this.korpaId, this.korisnikId, this.proizvodId, this.kolicina,
        this.proizvod);
 
   factory Korpa.fromJson(Map<String, dynamic> json) => _$KorpaFromJson(json);

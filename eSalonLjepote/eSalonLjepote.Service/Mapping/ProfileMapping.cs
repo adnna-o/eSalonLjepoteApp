@@ -96,6 +96,15 @@ namespace eSaljonLjepote.Services.Mapping
             CreateMap<NarudzbaInsertRequest, eSalonLjepote.Service.Database.Narudzba>();
             CreateMap<NarudzbaUpdateRequest, eSalonLjepote.Service.Database.Narudzba>();
 
+            CreateMap<eSalonLjepote.Service.Database.Korpa, eSalonLjepote.Model.Models.Korpa>();
+            CreateMap<KorpaSearchObject, eSalonLjepote.Service.Database.Korpa>();
+            CreateMap<KorpaInsertRequest, eSalonLjepote.Service.Database.Korpa>();
+            CreateMap<KorpaUpdateRequest, eSalonLjepote.Service.Database.Korpa>();
+
+            CreateMap<eSalonLjepote.Service.Database.OcjeneProizvoda, eSalonLjepote.Model.Models.OcjeneProizvoda>();
+            CreateMap<OcjeneProizvodaSearchRequest, eSalonLjepote.Service.Database.OcjeneProizvoda>();
+            CreateMap<OcjeneProizvodaInsertRequest, eSalonLjepote.Service.Database.OcjeneProizvoda>();
+            CreateMap<OcjeneProizvodaUpdateRequest, eSalonLjepote.Service.Database.OcjeneProizvoda>();
         }
     }
 }

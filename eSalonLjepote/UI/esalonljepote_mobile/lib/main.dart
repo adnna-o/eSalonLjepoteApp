@@ -4,6 +4,7 @@ import 'package:esalonljepote_mobile/providers/korisnik_provider.dart';
 import 'package:esalonljepote_mobile/providers/korisnik_uloga_provider.dart';
 import 'package:esalonljepote_mobile/providers/narudzba_provider.dart';
 import 'package:esalonljepote_mobile/providers/novosti_provider.dart';
+import 'package:esalonljepote_mobile/providers/ocjene_proizvoda_provider.dart';
 import 'package:esalonljepote_mobile/providers/proizvod_provider.dart';
 import 'package:esalonljepote_mobile/providers/recenzije_provider.dart';
 import 'package:esalonljepote_mobile/providers/salonLjepote_provider.dart';
@@ -32,12 +33,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => TerminiProvider()),
       ChangeNotifierProvider(create: (_) => RecenzijaProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => OcjeneProizvodaProvider()),
 
-
-
-
-
-      
     ],
     child: const MyApp(),
   ));
@@ -51,11 +48,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-       
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  LoginPage(),
+      home: LoginPage(),
     );
   }
 }
@@ -106,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
       if (Authorization.korisnik?.korisnikUlogas
               .any((role) => role.uloga?.nazivUloge == "Korisnik") ==
           true) {
+        Authorization.userId = Authorization.korisnik?.korisnikId;
         setState(() {
           loggedInUserID = Authorization.korisnik?.korisnikId;
         });

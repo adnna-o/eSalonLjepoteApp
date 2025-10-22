@@ -6,4 +6,5 @@ class Authorization {
   static String? password;
   static Korisnik? korisnik;
   static Uloga? uloga;
+  static int? userId;
 }

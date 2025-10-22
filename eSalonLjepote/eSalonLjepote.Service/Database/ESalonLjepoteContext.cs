@@ -47,6 +47,11 @@ public partial class ESalonLjepoteContext : DbContext
     public virtual DbSet<Usluga> Uslugas { get; set; }
 
     public virtual DbSet<Zaposleni> Zaposlenis { get; set; }
+    public virtual DbSet<Korpa> Korpas { get; set; }
+    public virtual DbSet<OcjeneProizvoda> OcjeneProizvodas { get; set; }
+
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
@@ -303,6 +308,45 @@ public partial class ESalonLjepoteContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Korisnik_Zaposleni");
         });
+
+        modelBuilder.Entity<Korpa>().HasKey(z => z.KorpaId);
+        modelBuilder.Entity<Korpa>(entity =>
+        {
+            entity.ToTable("Korpa");
+            entity.Property(e => e.Kolicina).HasMaxLength(20);
+
+        });
+
+        modelBuilder.Entity<Korpa>()
+            .HasOne(k => k.Korisnik)
+            .WithMany(kor => kor.Korpas)  // Ovdje proslijedi kolekciju iz klase Korisnik
+            .HasForeignKey(k => k.KorisnikId);
+
+        modelBuilder.Entity<Korpa>()
+            .HasOne(k => k.Proizvod)
+            .WithMany()  // Ako Proizvod nema kolekciju Korpa
+            .HasForeignKey(k => k.ProizvodId);
+
+        modelBuilder.Entity<OcjeneProizvoda>(entity =>
+        {
+            entity.ToTable("OcjeneProizvoda");
+            entity.Property(e => e.Ocjena).HasMaxLength(20);
+            entity.Property(e => e.Opis).HasMaxLength(20);
+
+
+        });
+
+        modelBuilder.Entity<OcjeneProizvoda>()
+            .HasOne(k => k.Korisnik)
+            .WithMany(kor => kor.OcjeneProizvodas)  // Ovdje proslijedi kolekciju iz klase Korisnik
+            .HasForeignKey(k => k.KorisnikId);
+
+        modelBuilder.Entity<Korpa>()
+            .HasOne(k => k.Proizvod)
+            .WithMany()  // Ako Proizvod nema kolekciju Korpa
+            .HasForeignKey(k => k.ProizvodId);
+
+
 
         modelBuilder.Seed();
         OnModelCreatingPartial(modelBuilder);

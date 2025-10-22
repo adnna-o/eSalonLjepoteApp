@@ -10,6 +10,8 @@ import 'package:esalonljepote_mobile/providers/salonLjepote_provider.dart';
 import 'package:esalonljepote_mobile/providers/usluga_provider.dart';
 import 'package:esalonljepote_mobile/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_mobile/screens/home_screen.dart';
+import 'package:esalonljepote_mobile/screens/korpa_screen.dart';
+import 'package:esalonljepote_mobile/screens/preporuceni_proizvodi_screen.dart';
 import 'package:esalonljepote_mobile/screens/proizvod_screen.dart';
 import 'package:esalonljepote_mobile/screens/termini_screen.dart';
 import 'package:flutter/material.dart';
@@ -141,9 +143,9 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         _buildNavIcon(context, Icons.home, HomeScreen(), "Home"),
         _buildNavIcon(context, Icons.schedule, TerminScreen(), "Termini"),
         _buildNavIcon(context, Icons.photo_library, ProizvodScreen(), "Pregled prozivoda"),
-        _buildNavIcon(context, Icons.shopping_bag, HomeScreen(), "Proizvodi"),
+        _buildNavIcon(context, Icons.shopping_bag, PreporuceniProizvodiScreen(), "Preppruceni"),
         _buildNavIcon(
-            context, Icons.newspaper, HomeScreen(), "Usluge i novosti"),
+            context, Icons.newspaper, CartScreen(), "Korpa"),
         _buildNavIcon(context, Icons.people, HomeScreen(), "Klijenti"),
         _buildNavIcon(context, Icons.receipt_long, HomeScreen(), "Narudzbe"),
         _buildNavIcon(context, Icons.history, HomeScreen(), "Historija"),

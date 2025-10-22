@@ -18,6 +18,7 @@ public partial class Narudzba
     public int KolicinaProizvoda { get; set; }
 
     public decimal? IznosNarudzbe { get; set; }
+    public string? PaymentId { get; set; }
 
     public virtual Korisnik Korisnik { get; set; } = null!;
 

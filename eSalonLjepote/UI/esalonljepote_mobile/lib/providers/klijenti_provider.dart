@@ -11,4 +11,11 @@ class KlijentiProvider extends BaseProvider<Klijenti> {
   Klijenti fromJson(data) {
     return Klijenti.fromJson(data);
   }
+
+    List<Klijenti> items = [];
+
+  Future<void> fetchAll() async {
+    var result = await super.get();
+    items = result.result;
+  }
 }

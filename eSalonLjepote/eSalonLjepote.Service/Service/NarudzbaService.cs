@@ -117,5 +117,86 @@ namespace eSalonLjepote.Service.Service
             return filteredQuery;
         }
 
+        public async Task<Model.Models.Narudzba> Checkout(NarudzbaCheckoutRequest req)
+        {
+            if (req == null || req.KorisnikId <= 0 || req.Stavke == null || req.Stavke.Count == 0)
+                throw new ArgumentException("Prazna ili neispravna narudžba.");
+
+            var strategy = _context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync<Model.Models.Narudzba>(async () =>
+            {
+                await using var tx = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    var nar = new Database.Narudzba
+                    {
+                        DatumNarudzbe = req.DatumNarudzbe ?? DateTime.Now,
+                        KorisnikId = req.KorisnikId,
+                        ProizvodId=req.ProizvodId,
+                    };
+
+                    _context.Narudzbas.Add(nar);
+                    await _context.SaveChangesAsync();
+
+                   
+
+                    await _context.SaveChangesAsync();
+                    await tx.CommitAsync();
+
+
+                    return _mapper.Map<Model.Models.Narudzba>(nar);
+                }
+                catch
+                {
+                    await tx.RollbackAsync();
+                    throw;
+                }
+            });
+        }
+
+        public async Task<int> CheckoutFromCart(int korisnikId,int proizvodId, string? paymentId = null, DateTime? datumNarudzbe = null)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync<int>(async () =>
+            {
+                await using var tx = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    var stavkeKorpe = await _context.Korpas
+                        .Where(k => k.KorisnikId == korisnikId)
+                        .ToListAsync();
+
+                    if (!stavkeKorpe.Any())
+                        throw new InvalidOperationException("Korpa je prazna.");
+
+                    var narudzba = new Narudzba
+                    {
+                        KorisnikId = korisnikId ,
+                        DatumNarudzbe = datumNarudzbe ?? DateTime.Now,
+                        ProizvodId=proizvodId,
+                        PaymentId = paymentId
+
+                    };
+
+                    _context.Narudzbas.Add(narudzba);
+                    await _context.SaveChangesAsync();
+
+                    _context.Korpas.RemoveRange(stavkeKorpe);
+                    await _context.SaveChangesAsync();
+
+                    await tx.CommitAsync();
+                    return narudzba.NarudzbaId;
+                }
+                catch
+                {
+                    await tx.RollbackAsync();
+                    throw;
+                }
+            });
+        }
+
+
     }
 }

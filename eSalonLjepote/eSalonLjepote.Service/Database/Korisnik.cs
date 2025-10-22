@@ -38,4 +38,7 @@ public partial class Korisnik
     public virtual ICollection<Novosti> Novostis { get; } = new List<Novosti>();
 
     public virtual ICollection<Zaposleni> Zaposlenis { get; } = new List<Zaposleni>();
+    public virtual ICollection<Korpa> Korpas { get; } = new List<Korpa>();
+    public virtual ICollection<OcjeneProizvoda> OcjeneProizvodas { get; } = new List<OcjeneProizvoda>();
+
 }

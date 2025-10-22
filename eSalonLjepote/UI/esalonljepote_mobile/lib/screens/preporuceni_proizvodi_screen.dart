@@ -1,8 +1,8 @@
+import 'package:esalonljepote_mobile/models/ocjene_proizvoda.dart';
 import 'package:esalonljepote_mobile/models/proizvod.dart';
-import 'package:esalonljepote_mobile/models/recenzije.dart';
 import 'package:esalonljepote_mobile/models/search_result.dart';
+import 'package:esalonljepote_mobile/providers/ocjene_proizvoda_provider.dart';
 import 'package:esalonljepote_mobile/providers/proizvod_provider.dart';
-import 'package:esalonljepote_mobile/providers/recenzije_provider.dart';
 import 'package:esalonljepote_mobile/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +12,10 @@ class PreporuceniProizvodiScreen extends StatefulWidget {
 }
 class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
   final ProizvodProvider proizvodProvider = ProizvodProvider();
-  final RecenzijaProvider recenzijeProizvodProvider = RecenzijaProvider();
+  final OcjeneProizvodaProvider ocjeneProizvodaProvider = OcjeneProizvodaProvider();
   double? _selectedRating;
   List<Proizvod>? _proizvod;
-  SearchResult<Recenzije>? result;
+  SearchResult<OcjeneProizvoda>? result;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
   Future<void> _fetchDoctors() async {
     try {
       _proizvod = await proizvodProvider.fetchRecommendedProizvodi();
-      result = await recenzijeProizvodProvider.get();
+      result = await ocjeneProizvodaProvider.get();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching data: $e')),
@@ -38,7 +38,7 @@ class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title_widget: Text('Recommended doctors'),
+      title_widget: Text('Recommended proizvodi'),
       child: Column(
         children: [
           Padding(
@@ -82,7 +82,7 @@ class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Average doctor rating: ${ratingGroup.rating.toStringAsFixed(1)}',
+                              'Average proizvod rating: ${ratingGroup.rating.toStringAsFixed(1)}',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
@@ -93,7 +93,7 @@ class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Doctor: ${proizvod.proizvodId}'),
+                                      Text('proizvod: ${proizvod.proizvodId}'),
                                       _buildOcjeneForDoktor(proizvod.proizvodId),
                                     ],
                                   ),
@@ -128,7 +128,7 @@ class _PreporuceniProizvodiScreen extends State<PreporuceniProizvodiScreen> {
       children: [
         Text('Number of ratings: $brojOcjena'),
         ...ocjeneZaProizvod.map((ocjena) {
-          return Text('Rating: ${ocjena.ocjena}, Reason: ${ocjena.opisRecenzije}');
+          return Text('Rating: ${ocjena.ocjena}, Reason: ${ocjena.opis}');
         }).toList(),
       ],
     );

@@ -80,4 +80,11 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       throw Exception('Failed to change password');
     }
   }
+
+  List<Korisnik> items = [];
+
+  Future<void> fetchAll() async {
+    var result = await super.get();
+    items = result.result;
+  }
 }

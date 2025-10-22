@@ -5,6 +5,7 @@ import 'package:esalonljepote_mobile/models/search_result.dart';
 import 'package:esalonljepote_mobile/providers/cart_provider.dart';
 import 'package:esalonljepote_mobile/providers/proizvod_provider.dart';
 import 'package:esalonljepote_mobile/screens/preporuceni_proizvodi_screen.dart';
+import 'package:esalonljepote_mobile/utils/util.dart';
 import 'package:esalonljepote_mobile/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -24,7 +25,6 @@ class _ProizvodScreen extends State<ProizvodScreen> {
 
   SearchResult<Proizvod>? proizvodResult;
   List<Proizvod>? _proizvodi;
-
 
   TextEditingController _nazivController = TextEditingController();
 
@@ -51,9 +51,9 @@ class _ProizvodScreen extends State<ProizvodScreen> {
     });
   }
 
- Future<void> _fetchRecommendedProizvodi() async {
+  Future<void> _fetchRecommendedProizvodi() async {
     try {
-    _proizvodi = await _proizvodProvider.fetchRecommendedProizvodi();
+      _proizvodi = await _proizvodProvider.fetchRecommendedProizvodi();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching data: $e')),
@@ -61,6 +61,7 @@ class _ProizvodScreen extends State<ProizvodScreen> {
     }
     setState(() {});
   }
+
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () async {
@@ -85,6 +86,7 @@ class _ProizvodScreen extends State<ProizvodScreen> {
       searchExecuted = true;
     });
   }
+
   void _toggleRecommendedDoctors() {
     setState(() {
       _showRecommendedProizvodi = !_showRecommendedProizvodi;
@@ -155,7 +157,7 @@ class _ProizvodScreen extends State<ProizvodScreen> {
             const SizedBox(
               height: 8.0,
             ),
-           /* ElevatedButton(
+            /* ElevatedButton(
               onPressed: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
@@ -170,22 +172,22 @@ class _ProizvodScreen extends State<ProizvodScreen> {
               },
               child: Text("Add new Proizvod!"),
             ),*/
-             SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _toggleRecommendedDoctors,
-                  child: Text(_showRecommendedProizvodi
-                      ? 'Hide recommended doctors'
-                      : 'Show recommended doctors'),
-                ),
-                if (_showRecommendedProizvodi)
-                  Container(
-                    width: double.infinity,
-                    height: 300,
-                    child: PreporuceniProizvodiScreen(),
-                  ),
-                SizedBox(
-                  height: 16,
-                ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _toggleRecommendedDoctors,
+              child: Text(_showRecommendedProizvodi
+                  ? 'Hide recommended doctors'
+                  : 'Show recommended doctors'),
+            ),
+            if (_showRecommendedProizvodi)
+              Container(
+                width: double.infinity,
+                height: 300,
+                child: PreporuceniProizvodiScreen(),
+              ),
+            SizedBox(
+              height: 16,
+            ),
           ],
         ),
       ),
@@ -251,21 +253,43 @@ class _ProizvodScreen extends State<ProizvodScreen> {
                           ),
                   ),
                   DataCell(Text(e.cijena.toString())),
-                  DataCell(ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 174, 159, 136),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    context.read<CartProvider>().insert(e);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("${e.nazivProizvoda} added to cart!")),
-                    );
-                  },
-                  child: const Text("Dodaj u korpu"),),)
+                  DataCell(
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 174, 159, 136),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (Authorization.userId == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Niste prijavljeni!")),
+                          );
+                          return;
+                        }
 
+                        try {
+                          await context
+                              .read<CartProvider>()
+                              .addToCart(Authorization.userId!, e.proizvodId!);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    "${e.nazivProizvoda} je dodan u korpu!")),
+                          );
+                        } catch (ex) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text("Greška pri dodavanju u korpu: $ex")),
+                          );
+                        }
+                      },
+                      child: const Text("Dodaj u korpu"),
+                    ),
+                  )
                 ]);
               }).toList() ??
               [],

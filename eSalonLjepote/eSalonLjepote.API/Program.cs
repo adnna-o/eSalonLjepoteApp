@@ -34,6 +34,10 @@ builder.Services.AddTransient<IGalerijaService, GalerijaService>();
 builder.Services.AddTransient<INovostiService, NovostiService>();
 builder.Services.AddTransient<IKorisnikUlogaService, KorisnikUlogaService>();
 builder.Services.AddTransient<INarudzbaService, NarudzbaService>();
+builder.Services.AddTransient<IKorpaService, KorpaService>();
+builder.Services.AddTransient<IOcjeneProizvodaService, OcjeneProizvodaService>();
+
+
 
 
 builder.Services.AddControllers()

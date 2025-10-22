@@ -43,7 +43,7 @@ namespace eSalonLjepote.Service.Service
                     if (mlContext == null)
                     {
                         mlContext = new MLContext();
-                        var tmpData = _context.Proizvods.Include(o => o.Recenzijes).ToList();
+                        var tmpData = _context.Proizvods.Include(o => o.OcjeneProizvodas).ToList();
 
                         if (!tmpData.Any())
                         {
@@ -54,13 +54,13 @@ namespace eSalonLjepote.Service.Service
 
                         foreach (var x in tmpData)
                         {
-                            if (x.Recenzijes.Count > 1)
+                            if (x.OcjeneProizvodas.Count > 1)
                             {
-                                var distinctItemId = x.Recenzijes.Select(y => y.ProizvodId).Distinct().ToList();
+                                var distinctItemId = x.OcjeneProizvodas.Select(y => y.ProizvodId).Distinct().ToList();
 
                                 distinctItemId.ForEach(y =>
                                 {
-                                    var relatedItems = x.Recenzijes.Where(z => z.RecenzijeId != y).Select(oi => oi.ProizvodId).Distinct();
+                                    var relatedItems = x.OcjeneProizvodas.Where(z => z.OcjeneProizvodaId != y).Select(oi => oi.ProizvodId).Distinct();
                                     foreach (var z in relatedItems)
                                     {
                                         data.Add(new DoktorEntry()
@@ -154,7 +154,7 @@ namespace eSalonLjepote.Service.Service
 
         public List<Model.Models.Proizvod> GetRecommendedProizvods()
         {
-            var proizvodRatings = _context.Recenzijes
+            var proizvodRatings = _context.OcjeneProizvodas
          .GroupBy(o => o.ProizvodId)
          .Select(g => new
          {
@@ -170,7 +170,7 @@ namespace eSalonLjepote.Service.Service
 
             var allDoctors = _context.Proizvods.ToList();
 
-            var recommendedDoctors = allDoctors
+            var recommendedProizvodi = allDoctors
                 .Join(proizvodRatings,
                       d => d.ProizvodId,
                       r => r.ProizvodId,
@@ -185,12 +185,12 @@ namespace eSalonLjepote.Service.Service
                 .Take(5)
                 .ToList();
 
-            foreach (var proizvod in recommendedDoctors)
+            foreach (var proizvod in recommendedProizvodi)
             {
-                Console.WriteLine($"DoktorId: {proizvod.ProizvodId}, Name: {proizvod.NazivProizvoda}");
+                Console.WriteLine($"ProizvodId: {proizvod.ProizvodId}, Name: {proizvod.NazivProizvoda}");
             }
 
-            return _mapper.Map<List<Model.Models.Proizvod>>(recommendedDoctors);
+            return _mapper.Map<List<Model.Models.Proizvod>>(recommendedProizvodi);
         }
 
 

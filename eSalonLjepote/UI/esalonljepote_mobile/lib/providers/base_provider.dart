@@ -179,7 +179,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
-   Future<List<Proizvod>> fetchRecommendedProizvodi() async {
+  Future<List<Proizvod>> fetchRecommendedProizvodi() async {
     try {
       final response = await http.get(Uri.parse('$totalUrl/preporuceni'),
           headers: createHeaders());
@@ -230,5 +230,36 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future<int> checkoutFromCart(
+    int userId,
+    String? paymentId, {
+    int? proizvodId,
+    DateTime? datumNarudzbe,
+  }) async {
+    final uri = Uri.parse('${_baseUrl}Narudzba/checkoutFromCart');
+    final headers = createHeaders();
 
+    final bodyMap = <String, dynamic>{
+      "korisnikId": userId,
+      "proizvodId": proizvodId,
+      "paymentId": paymentId,
+      if (datumNarudzbe != null)
+        "datumNarudzbe": datumNarudzbe.toIso8601String(),
+    };
+
+    final resp = await http.post(
+      uri,
+      headers: headers,
+      body: jsonEncode(bodyMap),
+    );
+
+    debugPrint('checkoutFromCart ${resp.statusCode}: ${resp.body}');
+
+    if (resp.statusCode >= 200 && resp.statusCode < 300) {
+      final data = jsonDecode(resp.body);
+      return data is int ? data : int.parse(data.toString());
+    } else {
+      throw Exception('Checkout failed: ${resp.statusCode} ${resp.body}');
+    }
+  }
 }
