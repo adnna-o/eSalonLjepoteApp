@@ -25,17 +25,17 @@ class TerminScreen extends StatefulWidget {
 
 class _TerminScreen extends State<TerminScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  late KlijentiProvider _klijentiProvider;
   late TerminiProvider _terminProvider;
   late ZaposleniProvider _zaposleniProvider;
   late KorisnikProvider _korisnikProvider;
   late UslugaProvider _uslugaProvider;
+  late KlijentiProvider _klijentiProvider;
 
   SearchResult<Termini>? terminResult;
-  SearchResult<Klijenti>? klijentiResult;
   SearchResult<Zaposleni>? zaposleniResult;
   SearchResult<Korisnik>? korisnikResult;
   SearchResult<Usluga>? uslugaResult;
+  SearchResult<Klijenti>? klijentiResult;
 
   TextEditingController _imeKlijentaController = TextEditingController();
   TextEditingController _prezimeKlijentaController = TextEditingController();
@@ -44,35 +44,51 @@ class _TerminScreen extends State<TerminScreen> {
   bool searchExecuted = false;
   Timer? _debounce;
 
-//Inicijalizacija providera
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _terminProvider = context.read<TerminiProvider>();
-    _klijentiProvider = context.read<KlijentiProvider>();
     _zaposleniProvider = context.read<ZaposleniProvider>();
     _korisnikProvider = context.read<KorisnikProvider>();
     _uslugaProvider = context.read<UslugaProvider>();
+    _klijentiProvider = context.read<KlijentiProvider>();
 
     _fetchTermini();
+    _fetchZaposleni();
+    _fetchUsluga();
+    _fetchKlijenti();
   }
 
-//buduca funkcija
   Future<void> _fetchTermini() async {
-    var terminData = await _terminProvider.get();
-    var klijentiData = await _klijentiProvider.get();
+    var terminiData = await _terminProvider.get();
+
+    setState(() {
+      terminResult = terminiData;
+    });
+  }
+
+  Future<void> _fetchZaposleni() async {
     var zaposleniData = await _zaposleniProvider.get();
-    var korisnikData = await _korisnikProvider.get();
+
+    setState(() {
+      zaposleniResult = zaposleniData;
+    });
+  }
+
+  Future<void> _fetchUsluga() async {
     var uslugaData = await _uslugaProvider.get();
 
     setState(() {
-      terminResult = terminData;
-      klijentiResult = klijentiData;
-      zaposleniResult = zaposleniData;
-      korisnikResult = korisnikData;
       uslugaResult = uslugaData;
     });
-    print(terminResult);
+  }
+
+  Future<void> _fetchKlijenti() async {
+    var klijentData = await _klijentiProvider.get();
+
+    setState(() {
+      klijentiResult = klijentData;
+    });
   }
 
   void _onSearchChanged() {
@@ -264,42 +280,59 @@ class _TerminScreen extends State<TerminScreen> {
     return Card(
       elevation: 5,
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('TerminId')),
-            DataColumn(label: Text('UslugeId')),
-            DataColumn(label: Text('ZaposleniId')),
-            DataColumn(label: Text('KlijentId')),
-            DataColumn(label: Text('Datum termina')),
-            DataColumn(label: Text('Vrijeme termina')),
-          ],
-          rows: terminResult?.result.map((Termini e) {
-                var klijentIme = klijentiResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
-                var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);
-                var korisnik = zaposleni != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == zaposleni.korisnikId)
-                    : null;
-                var imeZaposlenog =
-                    korisnik != null ? korisnik.ime : "Nepoznato";
-                var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columns: const <DataColumn>[
+              DataColumn(label: Text('TerminId')),
+              DataColumn(label: Text('Usluga')),
+              DataColumn(label: Text('Zaposleni')),
+              DataColumn(label: Text('Klijenti')),
+              DataColumn(label: Text('Datum')),
+              DataColumn(label: Text('Vrijeme')),
+            ],
+            rows: terminResult?.result.map((Termini e) {
+                  var klijent = klijentiResult?.result.firstWhere(
+                      (k) => k.klijentId == e.klijentId,
+                      orElse: () => Klijenti(klijentId: 0, korisnikId: 0));
 
-                return DataRow(cells: [
-                  DataCell(Text(e.datumTermina.toString())),
-                  DataCell(Text(nazivUsluge?.nazivUsluge ?? "")),
-                  DataCell(Text(imeZaposlenog!)),
-                  DataCell(Text(e.klijentId.toString())),
-                  DataCell(Text(e.datumTermina.toString())),
-                  DataCell(Text(e.vrijemeTermina.toString())),
-                ]);
-              }).toList() ??
-              [],
-        ),
-      ),
+                  // 2️⃣ Dohvati korisnika preko klijent.korisnikId
+                  var korisnik = korisnikResult?.result.firstWhere(
+                      (k) => k.korisnikId == klijent?.korisnikId,
+                      orElse: () => Korisnik(
+                          korisnikId: 0, ime: "Nepoznato", prezime: ""));
+
+                  var imeKlijenta =
+                      "${korisnik?.ime ?? "Nepoznato"} ${korisnik?.prezime ?? ""}";
+
+                  // 3️⃣ Dohvati uslugu
+                  var usluga = uslugaResult?.result.firstWhere(
+                      (u) => u.uslugaId == e.uslugaId,
+                      orElse: () =>
+                          Usluga(uslugaId: 0, nazivUsluge: "Nepoznata"));
+                  var nazivUsluge = usluga?.nazivUsluge ?? "Nepoznata";
+
+                  // 4️⃣ Dohvati zaposlenog i njegovo ime
+                  var zaposleni = zaposleniResult?.result.firstWhere(
+                      (z) => z.zaposleniId == e.zaposleniId,
+                      orElse: () => Zaposleni(zaposleniId: 0, korisnikId: 0));
+                  var zaposleniKorisnik = korisnikResult?.result.firstWhere(
+                      (k) => k.korisnikId == zaposleni?.korisnikId,
+                      orElse: () => Korisnik(
+                          korisnikId: 0, ime: "Nepoznato", prezime: ""));
+                  var imeZaposlenog =
+                      "${zaposleniKorisnik?.ime ?? "Nepoznato"} ${zaposleniKorisnik?.prezime ?? ""}";
+
+                  return DataRow(cells: [
+                    DataCell(Text(e.terminId.toString())),
+                    DataCell(Text(nazivUsluge)),
+                    DataCell(Text(imeZaposlenog)),
+                    DataCell(Text(imeKlijenta)),
+                    DataCell(Text(e.datumTermina.toString())),
+                    DataCell(Text(e.vrijemeTermina.toString())),
+                  ]);
+                }).toList() ??
+                [],
+          )),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:esalonljepote_mobile/models/klijenti.dart';
 import 'package:esalonljepote_mobile/models/narudzba.dart';
 import 'package:esalonljepote_mobile/models/proizvod.dart';
 import 'package:esalonljepote_mobile/models/recenzije.dart';
@@ -177,6 +178,19 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else {
       throw Exception("Unknown error");
     }
+  }
+
+  Future<Klijenti?> getByKorisnikId(int korisnikId) async {
+    var url = "$_baseUrl$_endpoint/GetByKorisnikId/$korisnikId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    final response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return Klijenti.fromJson(data);
+    }
+    return null;
   }
 
   Future<List<Proizvod>> fetchRecommendedProizvodi() async {

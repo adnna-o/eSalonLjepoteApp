@@ -12,8 +12,5 @@ public partial class Klijenti
 
     public virtual Korisnik Korisnik { get; set; } = null!;
 
-
-    public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
-
     public virtual ICollection<Termini> Terminis { get; } = new List<Termini>();
 }

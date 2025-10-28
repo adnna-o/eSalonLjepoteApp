@@ -13,19 +13,13 @@ part 'recenzije.g.dart';
 class Recenzije {
   Recenzije({
     this.recenzijeId,
-    this.klijentId,
-    this.zaposleniId,
-    this.uslugaId,
-    this.proizvodId,
+    this.korisnikId,
     this.opisRecenzije,
     this.ocjena,
   });
 
   int? recenzijeId;
-  int? klijentId;
-  int? zaposleniId;
-  int? uslugaId;
-  int? proizvodId;
+  int? korisnikId;
   String? opisRecenzije;
   int? ocjena;
 

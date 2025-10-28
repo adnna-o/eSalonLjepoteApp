@@ -9,8 +9,6 @@ namespace eSalonLjepote.Model.Request.SearchRequest
     public class RecenzijeSearchRequest:BaseSearchObject
     {
         public int? Ocjena { get; set; }
-        public bool isZaposleniIncluded { get; set; }
-        public bool isUslugaIncluded { get; set; }
-        public bool isProizvodIncluded { get; set; }
+        public bool? isKorisnikIncluded { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 import 'package:esalonljepote_mobile/providers/cart_provider.dart';
+import 'package:esalonljepote_mobile/providers/galerija_provider.dart';
 import 'package:esalonljepote_mobile/providers/klijenti_provider.dart';
 import 'package:esalonljepote_mobile/providers/korisnik_provider.dart';
 import 'package:esalonljepote_mobile/providers/korisnik_uloga_provider.dart';
@@ -13,6 +14,7 @@ import 'package:esalonljepote_mobile/providers/uloga_provider.dart';
 import 'package:esalonljepote_mobile/providers/usluga_provider.dart';
 import 'package:esalonljepote_mobile/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_mobile/screens/home_screen.dart';
+import 'package:esalonljepote_mobile/screens/registracija_screen.dart';
 import 'package:esalonljepote_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +36,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => RecenzijaProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => OcjeneProizvodaProvider()),
-
+      ChangeNotifierProvider(create: (_) => GalerijaProvider()),
     ],
     child: const MyApp(),
   ));
@@ -52,6 +54,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: LoginPage(),
+      routes: {
+        '/register':(context) => RegistracijaScreen()
+      },
     );
   }
 }
@@ -252,6 +257,29 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Don't have an account? ",
+                style:
+                    TextStyle(color: Color.fromARGB(255, 6, 6, 6)),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/register');
+                },
+                child: const Text(
+                  "Register!",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
           ),
         ]));
   }

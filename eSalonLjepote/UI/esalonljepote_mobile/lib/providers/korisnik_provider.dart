@@ -2,15 +2,19 @@ import 'dart:convert';
 
 import 'package:esalonljepote_mobile/models/korisnik.dart';
 import 'package:esalonljepote_mobile/providers/base_provider.dart';
+import 'package:esalonljepote_mobile/utils/util.dart';
 import 'package:http/http.dart' as http;
 
 class KorisnikProvider extends BaseProvider<Korisnik> {
+  Korisnik? _currentUser;
   KorisnikProvider() : super("Korisnik");
 
   @override
   Korisnik fromJson(data) {
     return Korisnik.fromJson(data);
   }
+
+  Korisnik? get currentUser => _currentUser;
 
   Future<Korisnik?> login(String username, String password) async {
     try {
@@ -25,6 +29,7 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       if (isValidResponse(response)) {
         var data = jsonDecode(response.body);
         Korisnik user = fromJson(data);
+        _currentUser = user;
         return user;
       } else {
         print("Invalid credentials");
@@ -46,6 +51,7 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       Korisnik user = fromJson(data) as Korisnik;
+      _currentUser = user;
       return user;
     } else {
       throw Exception("Pogrešno korisničko ime ili lozinka");
@@ -86,5 +92,52 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
   Future<void> fetchAll() async {
     var result = await super.get();
     items = result.result;
+  }
+
+  Future<Korisnik?> getLoggedUser() async {
+    try {
+      var username = Authorization.username;
+      if (username == null) return null;
+
+      var result = await get(filter: {"username": username});
+      if (result.result.isNotEmpty) {
+        return result.result.first;
+      }
+      return null;
+    } catch (e) {
+      print("Greška pri dohvaćanju ulogovanog korisnika: $e");
+      return null;
+    }
+  }
+
+   Future<String?> registruj({
+    required String ime,
+    required String prezime,
+    required String korisnickoIme,
+    required String email,
+    required String lozinka,
+  }) async {
+    final url = Uri.parse('$totalUrl');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "ime": ime,
+          "prezime": prezime,
+          "korisnickoIme": korisnickoIme,
+          "email": email,
+          "lozinka": lozinka,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return null;
+      } else {
+        return 'Greška: ${response.body}';
+      }
+    } catch (e) {
+      return 'Došlo je do greške: $e';
+    }
   }
 }

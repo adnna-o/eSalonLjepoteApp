@@ -9,6 +9,8 @@ using eSalonLjepote.Model.Models;
 
 namespace eSalonLjepote.API.Controllers
 {
+    [Authorize(Roles = "Korisnik")]
+    [AllowAnonymous]
     [Route("[controller]")]
 
     public class KorisnikController : BaseCRUDController<Model.Models.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
@@ -19,10 +21,13 @@ namespace eSalonLjepote.API.Controllers
         }
 
         //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Korisnik")]
         public override Korisnik Insert([FromBody] KorisnikInsertRequest insert)
         {
             return base.Insert(insert);
         }
+
+
         [HttpPost("login")]
         [AllowAnonymous]
         public Model.Models.Korisnik Login(string username, string password)

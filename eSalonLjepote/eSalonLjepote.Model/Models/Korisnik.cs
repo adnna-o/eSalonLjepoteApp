@@ -30,6 +30,8 @@ namespace eSalonLjepote.Model.Models
         public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; } = new List<KorisnikUloga>();
 
          public virtual ICollection<Narudzba> Narudzbas { get; set; } = new List<Narudzba>();
+        public virtual ICollection<Recenzije> Recenzijes { get; set; } = new List<Recenzije>();
+
         /* public virtual ICollection<Administrator> Administrators { get; set; } = new List<Administrator>();
 
          public virtual ICollection<Klijenti> Klijentis { get; set; } = new List<Klijenti>();

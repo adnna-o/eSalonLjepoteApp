@@ -12,10 +12,11 @@ class KlijentiProvider extends BaseProvider<Klijenti> {
     return Klijenti.fromJson(data);
   }
 
-    List<Klijenti> items = [];
-
-  Future<void> fetchAll() async {
-    var result = await super.get();
-    items = result.result;
+  Future<Klijenti?> getByKorisnikId(int korisnikId) async {
+    var data = await get(filter: {'korisnikId': korisnikId});
+    if (data.result.isNotEmpty) {
+      return data.result.first;
+    }
+    return null;
   }
 }

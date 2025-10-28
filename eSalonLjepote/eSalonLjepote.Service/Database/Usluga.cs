@@ -13,8 +13,6 @@ public partial class Usluga
 
     public string? Trajanje { get; set; }
 
-    public virtual ICollection<Recenzije> Recenzijes { get; } = new List<Recenzije>();
-
     public virtual ICollection<Termini> Terminis { get; } = new List<Termini>();
 
     public virtual ICollection<Klijenti> Klijentis { get; } = new List<Klijenti>();

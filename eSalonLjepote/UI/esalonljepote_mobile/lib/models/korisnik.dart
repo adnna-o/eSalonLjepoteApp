@@ -18,8 +18,8 @@ class Korisnik {
       this.korisnickoIme,
       this.spol,
       this.email,
-      this.password,
-      this.potvrdaPassworda,
+      this.lozinka,
+      this.potvrdaLozinke,
       this.lozinkaHash,
       this.telefon,
       this.slika,
@@ -32,8 +32,8 @@ class Korisnik {
   String? telefon;
   String? spol;
   String? email;
-  String? password;
-  String? potvrdaPassworda;
+  String? lozinka;
+  String? potvrdaLozinke;
   String? lozinkaHash;
   String? datumRodjenja;
   String? slika;

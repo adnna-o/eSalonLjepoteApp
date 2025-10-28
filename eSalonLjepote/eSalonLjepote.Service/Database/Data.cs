@@ -346,10 +346,7 @@ namespace eSaljonLjepote.Services.Database
                 new Recenzije()
                 {
                     RecenzijeId = 8100,
-                    KlijentId= 4001,
-                    ProizvodId= 6010,
-                    ZaposleniId= 8112,
-                    UslugaId= 7111,
+                    KorisnikId= 1002,
                     OpisRecenzije="Vrlo dobar",
                     Ocjena=5,
                 });

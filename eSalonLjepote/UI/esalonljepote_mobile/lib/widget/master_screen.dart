@@ -1,5 +1,6 @@
 import 'package:esalonljepote_mobile/models/klijenti.dart';
 import 'package:esalonljepote_mobile/models/korisnik.dart';
+import 'package:esalonljepote_mobile/models/ocjene_proizvoda.dart';
 import 'package:esalonljepote_mobile/models/salonLjepote.dart';
 import 'package:esalonljepote_mobile/models/search_result.dart';
 import 'package:esalonljepote_mobile/models/usluga.dart';
@@ -9,8 +10,11 @@ import 'package:esalonljepote_mobile/providers/korisnik_provider.dart';
 import 'package:esalonljepote_mobile/providers/salonLjepote_provider.dart';
 import 'package:esalonljepote_mobile/providers/usluga_provider.dart';
 import 'package:esalonljepote_mobile/providers/zaposleni_provider.dart';
+import 'package:esalonljepote_mobile/screens/galerija_screen.dart';
 import 'package:esalonljepote_mobile/screens/home_screen.dart';
 import 'package:esalonljepote_mobile/screens/korpa_screen.dart';
+import 'package:esalonljepote_mobile/screens/ocjene_details_screen.dart';
+import 'package:esalonljepote_mobile/screens/ocjene_tima_screen.dart';
 import 'package:esalonljepote_mobile/screens/preporuceni_proizvodi_screen.dart';
 import 'package:esalonljepote_mobile/screens/proizvod_screen.dart';
 import 'package:esalonljepote_mobile/screens/termini_screen.dart';
@@ -146,9 +150,9 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         _buildNavIcon(context, Icons.shopping_bag, PreporuceniProizvodiScreen(), "Preppruceni"),
         _buildNavIcon(
             context, Icons.newspaper, CartScreen(), "Korpa"),
-        _buildNavIcon(context, Icons.people, HomeScreen(), "Klijenti"),
-        _buildNavIcon(context, Icons.receipt_long, HomeScreen(), "Narudzbe"),
-        _buildNavIcon(context, Icons.history, HomeScreen(), "Historija"),
+        _buildNavIcon(context, Icons.people, GalerijaScreen(), "Galerija"),
+        _buildNavIcon(context, Icons.receipt_long, OcjenaProizvodDetailsScreen(), "Ocjene proizvoda"),
+        _buildNavIcon(context, Icons.history, OcjeneTimaScreen(), "Ocjene tima"),
         _buildNavIcon(context, Icons.people_alt, HomeScreen(), "Zaposleni"),
       ],
     );

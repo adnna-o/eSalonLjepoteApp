@@ -20,17 +20,9 @@ namespace eSalonLjepote.Service.Service
         }
         public override IQueryable<eSalonLjepote.Service.Database.Recenzije> AddInclude(IQueryable<eSalonLjepote.Service.Database.Recenzije> query, RecenzijeSearchRequest? search = null)
         {
-            if (search?.isZaposleniIncluded == true)
+            if (search?.isKorisnikIncluded == true)
             {
-                query = query.Include("Zaposleni");
-            }
-            if (search?.isUslugaIncluded == true)
-            {
-                query = query.Include("Usluga");
-            }
-            if (search?.isProizvodIncluded == true)
-            {
-                query = query.Include("Proizvod");
+                query = query.Include("Korisnik");
             }
             return base.AddInclude(query, search);
         }

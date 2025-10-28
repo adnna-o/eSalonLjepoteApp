@@ -32,6 +32,35 @@ namespace eSalonLjepote.Service.Service
             //entity.Uloga = insert.UlogaId;
             base.BeforeInsert(insert, entity);
         }
+
+        public override Model.Models.Korisnik Insert(KorisnikInsertRequest request)
+        {
+            var korisnik = base.Insert(request); // kreira korisnika
+
+            // Pronađi ili kreiraj ulogu "Korisnik"
+            var uloga = _context.Ulogas.FirstOrDefault(u => u.NazivUloge == "Korisnik");
+            if (uloga == null)
+            {
+                uloga = new Uloga
+                {
+                    NazivUloge = "Korisnik"
+                };
+                _context.Ulogas.Add(uloga);
+                _context.SaveChanges();
+            }
+
+            // Veza korisnik-uloga
+            var korisnikUloga = new KorisnikUloga
+            {
+                KorisnikId = korisnik.KorisnikId,
+                UlogaId = uloga.UlogaId
+            };
+
+            _context.KorisnikUlogas.Add(korisnikUloga);
+            _context.SaveChanges();
+
+            return korisnik;
+        }
         public static string GenerateSalt()
         {
             RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
@@ -41,10 +70,10 @@ namespace eSalonLjepote.Service.Service
 
             return Convert.ToBase64String(byteArray);
         }
-        public static string GenerateHash(string salt, string password)
+        public static string GenerateHash(string salt, string lozinka)
         {
             byte[] src = Convert.FromBase64String(salt);
-            byte[] bytes = Encoding.Unicode.GetBytes(password);
+            byte[] bytes = Encoding.Unicode.GetBytes(lozinka);
             byte[] dst = new byte[src.Length + bytes.Length];
 
             System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);

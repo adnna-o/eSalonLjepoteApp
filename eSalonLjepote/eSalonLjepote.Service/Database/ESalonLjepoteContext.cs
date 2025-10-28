@@ -213,21 +213,14 @@ public partial class ESalonLjepoteContext : DbContext
             entity.ToTable("Recenzije");
 
             entity.Property(e => e.OpisRecenzije).HasMaxLength(255);
+            entity.Property(e => e.Ocjena).HasMaxLength(255);
 
-            entity.HasOne(d => d.Klijent).WithMany(p => p.Recenzijes)
-                .HasForeignKey(d => d.KlijentId)
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.Recenzijes)
+                .HasForeignKey(d => d.KorisnikId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Klijent_Recenzije");
+                .HasConstraintName("FK_Korisnik_Recenzije");
 
-            entity.HasOne(d => d.Usluga).WithMany(p => p.Recenzijes)
-                .HasForeignKey(d => d.UslugaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Usluga_Recenzije");
-
-            entity.HasOne(d => d.Zaposleni).WithMany(p => p.Recenzijes)
-                .HasForeignKey(d => d.ZaposleniId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Zaposleni_Recenzije");
+          
         });
 
         modelBuilder.Entity<SalonLjepote>(entity =>

@@ -14,13 +14,13 @@ namespace eSalonLjepote.Model.Request
 
         public string KorisnickoIme { get; set; } = null!;
 
-        public DateTime? DatumRodjenja { get; set; }
+     //   public DateTime? DatumRodjenja { get; set; }
 
         public string? Email { get; set; }
 
-        public string? Telefon { get; set; }
+      //  public string? Telefon { get; set; }
 
-        public string? Spol { get; set; }
+      //  public string? Spol { get; set; }
 
        // public byte[]? Slika { get; set; }
 

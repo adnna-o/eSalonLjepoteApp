@@ -8,13 +8,7 @@ namespace eSalonLjepote.Model.Request
 {
     public class RecenzijeInsertRequest
     {
-        public int KlijentId { get; set; }
-
-        public int ZaposleniId { get; set; }
-
-        public int UslugaId { get; set; }
-
-        public int ProizvodId { get; set; }
+        public int KorisnikId { get; set; }
 
         public string OpisRecenzije { get; set; } = null!;
 
