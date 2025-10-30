@@ -13,29 +13,41 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       child: Container(
         width: double.infinity,
         height: double.infinity,
-        color: Color(0xFFF1F8E9),
-        padding: EdgeInsets.all(32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            // Gornji naslov
-            Text(
-              'Dobrodošli u eSalon Ljepote',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 172, 104, 142),
+            // 🖼️ Pozadinska slika
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/homepage.png', // 👈 promijeni prema tvojoj slici
+                fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 8),
-            
-            // Citat
-            Text(
-              'Beauty begins the moment you decide to be yourself.\n– Coco Chanel',
-              style: TextStyle(
-                fontSize: 18,
-                fontStyle: FontStyle.italic,
-                color: Color.fromARGB(255, 172, 104, 142),
+
+            // 🩶 Poluprozirni sloj preko slike (da tekst bude čitljiv)
+            Positioned.fill(
+              child: Container(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+
+            // ✨ Tekst u gornjem lijevom uglu
+            Positioned(
+             // top: 60,
+              bottom: 60,
+              right: 60,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+                  Text(
+                    '“Beauty begins the moment you decide to be yourself.”\n– Coco Chanel',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                      color: Color.fromRGBO(146, 126, 52, 1),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

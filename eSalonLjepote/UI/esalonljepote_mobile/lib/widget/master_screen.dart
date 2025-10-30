@@ -12,6 +12,7 @@ import 'package:esalonljepote_mobile/providers/usluga_provider.dart';
 import 'package:esalonljepote_mobile/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_mobile/screens/galerija_screen.dart';
 import 'package:esalonljepote_mobile/screens/home_screen.dart';
+import 'package:esalonljepote_mobile/screens/korisnik_screen.dart';
 import 'package:esalonljepote_mobile/screens/korpa_screen.dart';
 import 'package:esalonljepote_mobile/screens/ocjene_details_screen.dart';
 import 'package:esalonljepote_mobile/screens/ocjene_tima_screen.dart';
@@ -153,7 +154,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         _buildNavIcon(context, Icons.people, GalerijaScreen(), "Galerija"),
         _buildNavIcon(context, Icons.receipt_long, OcjenaProizvodDetailsScreen(), "Ocjene proizvoda"),
         _buildNavIcon(context, Icons.history, OcjeneTimaScreen(), "Ocjene tima"),
-        _buildNavIcon(context, Icons.people_alt, HomeScreen(), "Zaposleni"),
+        _buildNavIcon(context, Icons.people_alt, KorisnikProfileScreen(), "Korisnik profile"),
       ],
     );
   }
