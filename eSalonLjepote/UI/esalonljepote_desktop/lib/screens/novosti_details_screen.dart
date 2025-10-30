@@ -124,11 +124,11 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
       try {
         if (widget.novosti == null) {
           await _novostiProvider.insert(Novosti.fromJson(mutableFormData));
-          _showSuccessMessage('Appointment successfully added!');
+          _showSuccessMessage('Novosti uspjesno dodane!');
         } else {
           await _novostiProvider.update(
               widget.novosti!.novostiId!, Novosti.fromJson(mutableFormData));
-          _showSuccessMessage('Appointment successfully updated!');
+          _showSuccessMessage('Novosti uspjesno uredjene');
         }
 
         if (widget.onDataChanged != null) {
@@ -139,7 +139,7 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
       } catch (e) {
         print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save the term. Please try again.')),
+          SnackBar(content: Text('Greska u dodavanju nove novosti. Probajte opet.')),
         );
       }
     }
@@ -179,8 +179,8 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
               children: [
                 Text(
                   widget.novosti == null
-                      ? 'Adding a new appointment'
-                      : 'Updating appointment',
+                      ? 'Dodaj nove novosti'
+                      : 'Uredi novosti',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 24,
@@ -330,8 +330,8 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
         ),
       ),
       title: widget.novosti != null
-          ? "Appoitment: ${_zaposleniIme}"
-          : "Appoitment details",
+          ? "Novosti: ${_zaposleniIme}"
+          : "Detalji novosti",
     );
   }
 }

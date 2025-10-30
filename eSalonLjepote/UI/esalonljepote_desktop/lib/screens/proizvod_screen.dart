@@ -1,165 +1,96 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:esalonljepote_desktop/models/klijenti.dart';
-import 'package:esalonljepote_desktop/models/korisnik.dart';
 import 'package:esalonljepote_desktop/models/proizvod.dart';
 import 'package:esalonljepote_desktop/models/search_result.dart';
-import 'package:esalonljepote_desktop/models/termini.dart';
-import 'package:esalonljepote_desktop/models/usluga.dart';
-import 'package:esalonljepote_desktop/models/zaposleni.dart';
-import 'package:esalonljepote_desktop/providers/klijenti_provider.dart';
-import 'package:esalonljepote_desktop/providers/korisnik_provider.dart';
 import 'package:esalonljepote_desktop/providers/proizvod_provider.dart';
-import 'package:esalonljepote_desktop/providers/termini_provider.dart';
-import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
-import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_desktop/screens/proizvod_datails_screen.dart';
-import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 class ProizvodScreen extends StatefulWidget {
-  Proizvod? proizvod;
-  ProizvodScreen({Key? key, this.proizvod}) : super(key: key);
+  ProizvodScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProizvodScreen> createState() => _ProizvodScreen();
+  State<ProizvodScreen> createState() => _ProizvodScreenState();
 }
 
-class _ProizvodScreen extends State<ProizvodScreen> {
+class _ProizvodScreenState extends State<ProizvodScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   late ProizvodProvider _proizvodProvider;
-
   SearchResult<Proizvod>? proizvodResult;
 
-  TextEditingController _nazivController = TextEditingController();
-
-  bool searchExecuted = false;
+  final TextEditingController _nazivController = TextEditingController();
   Timer? _debounce;
 
-//Inicijalizacija providera
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _proizvodProvider = context.read<ProizvodProvider>();
-
-    _fetchProizvod();
+    _fetchProizvodi();
   }
 
-//buduca funkcija
-  Future<void> _fetchProizvod() async {
-    var proizvodData = await _proizvodProvider.get();
-
+  Future<void> _fetchProizvodi() async {
+    var data = await _proizvodProvider.get();
     setState(() {
-      proizvodResult = proizvodData;
+      proizvodResult = data;
     });
   }
 
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () async {
-      var data = await _proizvodProvider.get(filter: {
-        'nazivProizvoda': _nazivController.text.trim(),
-      });
+      var data = await _proizvodProvider.get(
+        filter: {'nazivProizvoda': _nazivController.text.trim()},
+      );
       setState(() {
         proizvodResult = data;
       });
     });
   }
 
-  Future<void> _searchData() async {
-    var filter = {
-      'nazivProizvoda': _nazivController.text,
-    };
-
-    var data = await _proizvodProvider.get(filter: filter);
-
-    setState(() {
-      proizvodResult = data;
-      searchExecuted = true;
-    });
-  }
-
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.person_search,
-                      color: const Color.fromARGB(255, 34, 78, 57)),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Naziv proizvod",
-                        labelStyle: TextStyle(
-                            color: const Color.fromARGB(255, 34, 78, 57)),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        fillColor: const Color.fromARGB(255, 237, 237, 237),
-                        filled: true,
-                      ),
-                      controller: _nazivController,
-                      onChanged: (value) => _onSearchChanged(),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _searchData,
-                child: Text("Search"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF8F8F8), Color(0xFFEFEFEF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Column(
           children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8.0,
-            ),
-            Expanded(child: _buildDataListView()),
-            const SizedBox(
-              height: 8.0,
-            ),
-            ElevatedButton(
+            _buildSearchBar(),
+            const SizedBox(height: 20),
+            Expanded(child: _buildProizvodiGrid()),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 173, 160, 117),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                "Dodaj novi proizvod",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
               onPressed: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => ProizvodDetailsScreen(
-                      onProizvodUpdated: _fetchProizvod,
+                      onProizvodUpdated: _fetchProizvodi,
                     ),
                   ),
                 );
-                if (result != null) {
-                  _fetchProizvod();
-                }
+                if (result != null) _fetchProizvodi();
               },
-              child: Text("Add new Proizvod!"),
             ),
           ],
         ),
@@ -167,69 +98,138 @@ class _ProizvodScreen extends State<ProizvodScreen> {
     );
   }
 
-  void _refreshProizvodi() async {
-    var proizvodData = await _proizvodProvider.get();
-
-    setState(() {
-      proizvodResult = proizvodData;
-    });
-  }
-
-  Widget _buildDataListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
-
+  Widget _buildSearchBar() {
     return Card(
-      elevation: 5,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Naziv proizvoda ')),
-            DataColumn(label: Text('Slika')),
-            DataColumn(label: Text('Cijena')),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Color.fromARGB(255, 173, 160, 117)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextField(
+                controller: _nazivController,
+                onChanged: (_) => _onSearchChanged(),
+                decoration: const InputDecoration(
+                  hintText: "Pretraži proizvode...",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _nazivController.clear();
+                _fetchProizvodi();
+              },
+            ),
           ],
-          rows: proizvodResult?.result.map((Proizvod e) {
-                /* var klijentIme = klijentiResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
-                var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);
-                var korisnik = zaposleni != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == zaposleni.korisnikId)
-                    : null;
-                var imeZaposlenog =
-                    korisnik != null ? korisnik.ime : "Nepoznato";
-                var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);
-*/
-                return DataRow(cells: [
-                  DataCell(Text(e.nazivProizvoda.toString())),
-                  DataCell(
-                    e.slika != null && e.slika!.isNotEmpty
-                        ? ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
-                            child: Image.memory(
-                              base64Decode(e.slika!),
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(12)),
-                            ),
-                            child: const Center(child: Text('Nema slike')),
-                          ),
-                  ),
-                  DataCell(Text(e.cijena.toString())),
-                ]);
-              }).toList() ??
-              [],
         ),
       ),
+    );
+  }
+
+  Widget _buildProizvodiGrid() {
+    if (proizvodResult == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final proizvodi = proizvodResult!.result;
+
+    if (proizvodi.isEmpty) {
+      return const Center(
+        child: Text("Nema dostupnih proizvoda."),
+      );
+    }
+
+    return GridView.builder(
+      itemCount: proizvodi.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4, // broj kolona
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, index) {
+        final p = proizvodi[index];
+
+        return MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () async {
+              final result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProizvodDetailsScreen(
+                    proizvod: p,
+                    onProizvodUpdated: _fetchProizvodi,
+                  ),
+                ),
+              );
+              if (result != null) _fetchProizvodi();
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(15),
+                      ),
+                      child: p.slika != null && p.slika!.isNotEmpty
+                          ? Image.memory(
+                              base64Decode(p.slika!),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            )
+                          : Container(
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.image_not_supported,
+                                  size: 50, color: Colors.grey),
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          p.nazivProizvoda ?? "Nepoznato",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "${p.cijena?.toStringAsFixed(2) ?? '--'} KM",
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 173, 160, 117),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

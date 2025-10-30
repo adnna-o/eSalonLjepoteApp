@@ -7,17 +7,13 @@ import 'package:esalonljepote_desktop/models/proizvod.dart';
 import 'package:esalonljepote_desktop/models/search_result.dart';
 import 'package:esalonljepote_desktop/models/termini.dart';
 import 'package:esalonljepote_desktop/models/usluga.dart';
-import 'package:esalonljepote_desktop/models/zaposleni.dart';
 import 'package:esalonljepote_desktop/providers/klijenti_provider.dart';
 import 'package:esalonljepote_desktop/providers/korisnik_provider.dart';
 import 'package:esalonljepote_desktop/providers/narudzba_provider.dart';
 import 'package:esalonljepote_desktop/providers/proizvod_provider.dart';
 import 'package:esalonljepote_desktop/providers/termini_provider.dart';
 import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
-import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_desktop/screens/klijent_details_screen.dart';
-import 'package:esalonljepote_desktop/screens/proizvod_datails_screen.dart';
-import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -30,7 +26,6 @@ class KlijentScreen extends StatefulWidget {
   @override
   State<KlijentScreen> createState() => _KlijentScreen();
 }
-
 class _KlijentScreen extends State<KlijentScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   late KlijentiProvider _klijentiProvider;
@@ -50,12 +45,10 @@ class _KlijentScreen extends State<KlijentScreen> {
   TextEditingController _imeKlijentaController = TextEditingController();
   TextEditingController _prezimeKlijentaController = TextEditingController();
   TextEditingController _uslugaKlijentaController = TextEditingController();
-  TextEditingController _narudzbaKlijentaController = TextEditingController();
 
   bool searchExecuted = false;
   Timer? _debounce;
 
-//Inicijalizacija providera
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -234,7 +227,7 @@ class _KlijentScreen extends State<KlijentScreen> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _searchData,
-                child: Text("Search"),
+                child: Text("Pretrazi"),
               ),
             ],
           ),
@@ -247,13 +240,19 @@ class _KlijentScreen extends State<KlijentScreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/homepage.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           children: [
             _buildSearch(),
             const SizedBox(
               height: 8.0,
             ),
-            Expanded(child: _buildDataListView()),
+            Expanded(child: _buildKlijentiCards()),
             const SizedBox(
               height: 8.0,
             ),
@@ -270,7 +269,7 @@ class _KlijentScreen extends State<KlijentScreen> {
                   _fetchKlijenti();
                 }
               },
-              child: Text("Add new Klijent!"),
+              child: Text("Dodaj novog klijenta!"),
             ),
           ],
         ),
@@ -286,103 +285,108 @@ class _KlijentScreen extends State<KlijentScreen> {
     });
   }
 
-  Widget _buildDataListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
+  Widget _buildKlijentiCards() {
+    if (klijentResult == null || klijentResult!.result.isEmpty) {
+      return Center(
+        child: Text("Nema klijenata za prikaz"),
+      );
+    }
 
-    return Card(
-      elevation: 5,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Slika ')),
-            DataColumn(label: Text('Ime i prezime klijenta ')),
-            DataColumn(label: Text('Usluga')),
-            DataColumn(label: Text('Narudzba')),
-          ],
-          rows: klijentResult?.result.map((Klijenti e) {
-                var klijenti = klijentResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
-                /* var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);*/
-                var korisnik = klijenti != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == klijenti.korisnikId)
-                    : null;
-                var imeKlijenta = korisnik != null ? korisnik.ime : "Nepoznato";
-                var prezimeKlijenta =
-                    korisnik != null ? korisnik.prezime : "Nepoznato";
-                /* var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);*/
-                var korisnikSlika =
-                    korisnik != null ? korisnik.slika : "Nepoznato";
-
-                var terminiZaKlijenta = terminResult?.result
-                    .where((t) => t.klijentId == e.klijentId)
-                    .toList();
-
-                String nazivUsluge = "Nepoznata usluga";
-                if (terminiZaKlijenta != null && terminiZaKlijenta.isNotEmpty) {
-                  var uslugaId = terminiZaKlijenta.first.uslugaId;
-                  var usluga = uslugaResult?.result.firstWhere(
-                      (u) => u.uslugaId == uslugaId,
-                      orElse: () => Usluga(nazivUsluge: "Nepoznata"));
-                  nazivUsluge = usluga?.nazivUsluge ?? "Nepoznata usluga";
-                }
-
-                var narudzbeZaKlijenta = narudzbaResult?.result
-                    .where((n) => n.korisnikId == e.korisnikId)
-                    .toList();
-
-                String nazivProizvoda = "Nema narudžbi";
-
-                if (narudzbeZaKlijenta != null &&
-                    narudzbeZaKlijenta.isNotEmpty) {
-                  var proizvodId = narudzbeZaKlijenta.first.proizvodId;
-                  var proizvod = proizvodResult?.result.firstWhere(
-                    (p) => p.proizvodId == proizvodId,
-                    orElse: () => Proizvod(nazivProizvoda: "Nepoznat"),
-                  );
-
-                  nazivProizvoda =
-                      proizvod?.nazivProizvoda ?? "Nepoznat proizvod";
-                }
-
-                return DataRow(cells: [
-                  DataCell(
-                    korisnik != null &&
-                            korisnik.slika != null &&
-                            korisnik.slika!.isNotEmpty
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.memory(
-                              base64Decode(korisnik.slika!),
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Center(
-                                child: Text('Nema\nslike',
-                                    textAlign: TextAlign.center)),
-                          ),
-                  ),
-                  DataCell(Text('$imeKlijenta $prezimeKlijenta')),
-                  DataCell(Text(nazivUsluge)),
-                  DataCell(Text(nazivProizvoda)),
-                ]);
-              }).toList() ??
-              [],
-        ),
+    return GridView.builder(
+      padding: EdgeInsets.all(8.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, 
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
+        childAspectRatio: 9 / 3,
       ),
+      itemCount: klijentResult!.result.length,
+      itemBuilder: (context, index) {
+        Klijenti e = klijentResult!.result[index];
+        var korisnik = korisnikResult?.result.firstWhere(
+          (k) => k.korisnikId == e.korisnikId,
+          orElse: () => Korisnik(ime: "Nepoznato", prezime: "", slika: ""),
+        );
+
+        var terminiZaKlijenta = terminResult?.result
+            .where((t) => t.klijentId == e.klijentId)
+            .toList();
+
+        String nazivUsluge = "Nepoznata usluga";
+        if (terminiZaKlijenta != null && terminiZaKlijenta.isNotEmpty) {
+          var uslugaId = terminiZaKlijenta.first.uslugaId;
+          var usluga = uslugaResult?.result.firstWhere(
+              (u) => u.uslugaId == uslugaId,
+              orElse: () => Usluga(nazivUsluge: "Nepoznata"));
+          nazivUsluge = usluga?.nazivUsluge ?? "Nepoznata usluga";
+        }
+
+        var narudzbeZaKlijenta = narudzbaResult?.result
+            .where((n) => n.korisnikId == e.korisnikId)
+            .toList();
+
+        String nazivProizvoda = "Nema narudžbi";
+        if (narudzbeZaKlijenta != null && narudzbeZaKlijenta.isNotEmpty) {
+          var proizvodId = narudzbeZaKlijenta.first.proizvodId;
+          var proizvod = proizvodResult?.result.firstWhere(
+            (p) => p.proizvodId == proizvodId,
+            orElse: () => Proizvod(nazivProizvoda: "Nepoznat"),
+          );
+          nazivProizvoda = proizvod?.nazivProizvoda ?? "Nepoznat proizvod";
+        }
+
+        return Card(
+          elevation: 4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: InkWell(
+            onTap: () async {
+              final result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => KlijentiDetailsScreen(
+                    onDataChanged: _fetchKlijenti,
+                    klijenti: e,
+                  ),
+                ),
+              );
+              if (result != null) _fetchKlijenti();
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color.fromARGB(255, 173, 160, 117), Color.fromARGB(255, 192, 179, 139)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage:
+                        (korisnik?.slika != null && korisnik!.slika!.isNotEmpty)
+                            ? MemoryImage(base64Decode(korisnik.slika!))
+                            : null,
+                    child: (korisnik?.slika == null || korisnik!.slika!.isEmpty)
+                        ? Icon(Icons.person, size: 30)
+                        : null,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '${korisnik?.ime ?? "Nepoznato"} ${korisnik?.prezime ?? ""}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text('Usluga: $nazivUsluge'),
+                  Text('Narudžba: $nazivProizvoda'),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -14,6 +14,7 @@ import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class TerminScreen extends StatefulWidget {
@@ -107,106 +108,84 @@ class _TerminScreen extends State<TerminScreen> {
 
   Widget _buildSearch() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(12.0),
       child: Card(
-        elevation: 5,
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(Icons.person_search,
-                      color: const Color.fromARGB(255, 34, 78, 57)),
-                  SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Ime klijenta",
-                        labelStyle: TextStyle(
-                            color: const Color.fromARGB(255, 34, 78, 57)),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        fillColor: const Color.fromARGB(255, 237, 237, 237),
-                        filled: true,
-                      ),
                       controller: _imeKlijentaController,
                       onChanged: (value) => _onSearchChanged(),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person,
+                            color: Color.fromARGB(255, 173, 160, 117)),
+                        labelText: "Ime klijenta",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.person_search,
-                      color: const Color.fromARGB(255, 34, 78, 57)),
-                  SizedBox(width: 8),
+                  SizedBox(width: 12),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Prezime klijenta",
-                        labelStyle: TextStyle(
-                            color: const Color.fromARGB(255, 34, 78, 57)),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        fillColor: const Color.fromARGB(255, 237, 237, 237),
-                        filled: true,
-                      ),
                       controller: _prezimeKlijentaController,
                       onChanged: (value) => _onSearchChanged(),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person_outline,
+                            color: Color.fromARGB(255, 173, 160, 117)),
+                        labelText: "Prezime klijenta",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.person_search,
-                      color: const Color.fromARGB(255, 34, 78, 57)),
-                  SizedBox(width: 8),
+                  SizedBox(width: 12),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Naziv usluge",
-                        labelStyle: TextStyle(
-                            color: const Color.fromARGB(255, 34, 78, 57)),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color.fromARGB(255, 34, 78, 57)),
-                        ),
-                        fillColor: const Color.fromARGB(255, 237, 237, 237),
-                        filled: true,
-                      ),
                       controller: _nazivUslugeController,
                       onChanged: (value) => _onSearchChanged(),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.design_services,
+                            color: Color.fromARGB(255, 173, 160, 117)),
+                        labelText: "Naziv usluge",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      ),
                     ),
                   ),
+                  SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: _searchData,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 173, 160, 117),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    child: Text("Pretraži",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                  ),
                 ],
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              ElevatedButton(
-                onPressed: _searchData,
-                child: Text("Search"),
               ),
             ],
           ),
@@ -215,40 +194,59 @@ class _TerminScreen extends State<TerminScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Container(
-        child: Column(
-          children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8.0,
-            ),
-            Expanded(child: _buildDataListView()),
-            const SizedBox(
-              height: 8.0,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => TerminDetailsScreen(
-                      onDataChanged: _fetchTermini,
-                    ),
-                  ),
-                );
-                if (result != null) {
-                  _fetchTermini();
-                }
-              },
-              child: Text("Add new appointment!"),
-            ),
-          ],
+ @override
+Widget build(BuildContext context) {
+  double maxWidth = 1000; // maksimalna širina za search i listu
+  return MasterScreenWidget(
+    child: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/homepage.png"),
+          fit: BoxFit.cover,
         ),
       ),
-    );
-  }
+      child: Center( // centriramo sadržaj horizontalno
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: Column(
+            children: [
+              _buildSearch(), // search bar
+              const SizedBox(height: 8.0),
+              Expanded(child: _buildDataListView()), // lista termina
+              const SizedBox(height: 8.0),
+              ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => TerminDetailsScreen(
+                        onDataChanged: _fetchTermini,
+                      ),
+                    ),
+                  );
+                  if (result != null) {
+                    _fetchTermini();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 173, 160, 117),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "Dodaj novi termin!",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 
   void _refreshTermini() async {
     var terminData = await _terminProvider.get();
@@ -259,25 +257,46 @@ class _TerminScreen extends State<TerminScreen> {
   }
 
   Widget _buildDataListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
-
     return Card(
-      elevation: 5,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: EdgeInsets.all(12),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('TerminId')),
-            DataColumn(label: Text('UslugeId')),
-            DataColumn(label: Text('ZaposleniId')),
-            DataColumn(label: Text('KlijentId')),
+          headingRowColor: MaterialStateProperty.all(
+              Color.fromARGB(255, 173, 160, 117)), // boja headera
+          dataRowColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered))
+                return Color.fromARGB(255, 173, 160, 117);
+              return null; // default
+            },
+          ),
+          headingTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: const Color.fromARGB(255, 255, 255, 255)),
+          columns: const [
+            DataColumn(label: Text('Usluga')),
+            DataColumn(label: Text('Zaposleni')),
+            DataColumn(label: Text('Klijent')),
             DataColumn(label: Text('Datum termina')),
             DataColumn(label: Text('Vrijeme termina')),
           ],
-          rows: terminResult?.result.map((Termini e) {
-                var klijentIme = klijentiResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
+          rows: terminResult?.result.map((e) {
+                var klijent = klijentiResult?.result
+                    .firstWhere((k) => k.klijentId == e.klijentId);
+
+                var korisnikKlijenta = klijent != null &&
+                        klijent.korisnikId != null
+                    ? korisnikResult?.result
+                        .firstWhere((k) => k.korisnikId == klijent.korisnikId)
+                    : null;
+
+                String imeKlijenta = korisnikKlijenta?.ime ?? "Nepoznato";
+                String prezimeKlijenta =
+                    korisnikKlijenta?.prezime ?? "Nepoznato";
+
                 var zaposleni = zaposleniResult?.result
                     .firstWhere((p) => p.zaposleniId == e.zaposleniId);
                 var korisnik = zaposleni != null
@@ -286,17 +305,21 @@ class _TerminScreen extends State<TerminScreen> {
                     : null;
                 var imeZaposlenog =
                     korisnik != null ? korisnik.ime : "Nepoznato";
+                var prezimeZaposlenog =
+                    korisnik != null ? korisnik.prezime : "Nepoznato";
                 var nazivUsluge = uslugaResult?.result
                     .firstWhere((p) => p.uslugaId == e.uslugaId);
 
-                return DataRow(cells: [
-                  DataCell(Text(e.datumTermina.toString())),
-                  DataCell(Text(nazivUsluge?.nazivUsluge ?? "")),
-                  DataCell(Text(imeZaposlenog!)),
-                  DataCell(Text(e.klijentId.toString())),
-                  DataCell(Text(e.datumTermina.toString())),
-                  DataCell(Text(e.vrijemeTermina.toString())),
-                ]);
+                return DataRow(
+                  cells: [
+                    DataCell(Text(nazivUsluge?.nazivUsluge ?? "")),
+                    DataCell(Text("$imeZaposlenog $prezimeZaposlenog")),
+                    DataCell(Text("$imeKlijenta $prezimeKlijenta")),
+                    DataCell(
+                        Text(DateFormat('dd.MM.yyyy').format(e.datumTermina!))),
+                    DataCell(Text(e.vrijemeTermina.toString())),
+                  ],
+                );
               }).toList() ??
               [],
         ),

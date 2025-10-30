@@ -1,27 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:esalonljepote_desktop/models/klijenti.dart';
-import 'package:esalonljepote_desktop/models/korisnik.dart';
 import 'package:esalonljepote_desktop/models/novosti.dart';
-import 'package:esalonljepote_desktop/models/proizvod.dart';
 import 'package:esalonljepote_desktop/models/search_result.dart';
-import 'package:esalonljepote_desktop/models/termini.dart';
 import 'package:esalonljepote_desktop/models/usluga.dart';
-import 'package:esalonljepote_desktop/models/zaposleni.dart';
-import 'package:esalonljepote_desktop/providers/klijenti_provider.dart';
-import 'package:esalonljepote_desktop/providers/korisnik_provider.dart';
 import 'package:esalonljepote_desktop/providers/novosti_provider.dart';
-import 'package:esalonljepote_desktop/providers/proizvod_provider.dart';
-import 'package:esalonljepote_desktop/providers/termini_provider.dart';
 import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
-import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_desktop/screens/novosti_details_screen.dart';
-import 'package:esalonljepote_desktop/screens/proizvod_datails_screen.dart';
-import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
 import 'package:esalonljepote_desktop/screens/usluga_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class UslugaNovostiScreen extends StatefulWidget {
@@ -44,7 +33,6 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
   bool searchExecuted = false;
   Timer? _debounce;
 
-//Inicijalizacija providera
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,7 +43,6 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
     _fetchUsluga();
   }
 
-//buduca funkcija
   Future<void> _fetchNovosti() async {
     var novostiData = await _novostiProvider.get();
 
@@ -82,39 +69,9 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
             const SizedBox(
               height: 8.0,
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => UslugaDetailsScreen(
-                      onUslugaUpdate: _fetchUsluga,
-                    ),
-                  ),
-                );
-                if (result != null) {
-                  _fetchUsluga();
-                }
-              },
-              child: Text("Add new Usluga!"),
-            ),
-           Expanded(child: _buildNovostiListView()),
+            Expanded(child: _buildNovostiListView()),
             const SizedBox(
               height: 8.0,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => NovostiDetailsScreen(
-                      onDataChanged: _fetchNovosti,
-                    ),
-                  ),
-                );
-                if (result != null) {
-                  _fetchNovosti();
-                }
-              },
-              child: Text("Add new Novosti!"),
             ),
           ],
         ),
@@ -139,83 +96,254 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
   }
 
   Widget _buildUslugaListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
+    if (uslugaResult == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    return Card(
-      elevation: 5,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Naziv usluge ')),
-            DataColumn(label: Text('Cijena')),
-            DataColumn(label: Text('Trajanje')),
-          ],
-          rows: uslugaResult?.result.map((Usluga e) {
-                /* var klijentIme = klijentiResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
-                var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);
-                var korisnik = zaposleni != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == zaposleni.korisnikId)
-                    : null;
-                var imeZaposlenog =
-                    korisnik != null ? korisnik.ime : "Nepoznato";
-                var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);
-*/
-                return DataRow(cells: [
-                  DataCell(Text(e.nazivUsluge.toString())),
-                  DataCell(Text(e.cijena.toString())),
-                  DataCell(Text(e.trajanje.toString())),
-                ]);
-              }).toList() ??
-              [],
-        ),
+    final controller = PageController(viewportFraction: 0.3);
+    final usluge = uslugaResult!.result;
+
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (controller.hasClients && usluge.isNotEmpty) {
+        int nextPage = controller.page!.round() + 1;
+        if (nextPage >= usluge.length) nextPage = 0;
+        controller.animateToPage(nextPage,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut);
+      }
+    });
+
+    return SizedBox(
+      height: 260,
+      child: PageView.builder(
+        controller: controller,
+        itemCount: usluge.length + 1,
+        itemBuilder: (context, index) {
+          if (index == usluge.length) {
+            return GestureDetector(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => UslugaDetailsScreen(
+                      onUslugaUpdate: _fetchUsluga,
+                    ),
+                  ),
+                );
+                if (result != null) _fetchUsluga();
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                      color: Color.fromARGB(255, 173, 160, 117), width: 2),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add,
+                          size: 50, color: Color.fromARGB(255, 173, 160, 117)),
+                      SizedBox(height: 10),
+                      Text(
+                        "Dodaj novu uslugu",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 173, 160, 117),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final e = usluge[index];
+
+          return Container(
+            margin:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              image: const DecorationImage(
+                image: AssetImage('assets/images/homepage.png'),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    Color.fromARGB(135, 132, 132, 132), BlendMode.lighten),
+              ),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26, blurRadius: 6, offset: Offset(2, 2)),
+              ],
+            ),
+            
+            child: Card(
+              color: Colors.transparent,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      e.nazivUsluge ?? '',
+                      style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${e.cijena} KM',
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Trajanje: ${e.trajanje} min',
+                      style:
+                          const TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildNovostiListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
+    if (novostiResult == null) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-    return Card(
-      elevation: 5,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Naziv novosti ')),
-            DataColumn(label: Text('Opis novosti')),
-            DataColumn(label: Text('Datum objava')),
-            DataColumn(label: Text('Aktivna objava: da/ne')),
-          ],
-          rows: novostiResult?.result.map((Novosti e) {
-                /* var klijentIme = klijentiResult?.result
-                    .firstWhere((p) => p.klijentId == e.klijentId);
-                var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);
-                var korisnik = zaposleni != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == zaposleni.korisnikId)
-                    : null;
-                var imeZaposlenog =
-                    korisnik != null ? korisnik.ime : "Nepoznato";
-                var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);
-*/
-                return DataRow(cells: [
-                  DataCell(Text(e.naziv.toString())),
-                  DataCell(Text(e.opisNovisti.toString())),
-                  DataCell(Text(e.datumObjave.toString())),
-                 DataCell(Text(e.aktivna == 1 || e.aktivna == true ? 'Da' : 'Ne')),
-                ]);
-              }).toList() ??
-              [],
-        ),
+    final controller = PageController(viewportFraction: 0.4);
+    final novosti = novostiResult!.result;
+
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      if (controller.hasClients && novosti.isNotEmpty) {
+        int nextPage = controller.page!.round() + 1;
+        if (nextPage >= novosti.length) nextPage = 0;
+        controller.animateToPage(nextPage,
+            duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+      }
+    });
+
+    return SizedBox(
+      height: 250,
+      child: PageView.builder(
+        controller: controller,
+        itemCount: novosti.length + 1,
+        itemBuilder: (context, index) {
+          if (index == novosti.length) {
+            return GestureDetector(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => NovostiDetailsScreen(
+                      onDataChanged: _fetchNovosti,
+                    ),
+                  ),
+                );
+                if (result != null) _fetchNovosti();
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Color.fromARGB(255, 173, 160, 117), width: 2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add,
+                          size: 50, color: Color.fromARGB(255, 173, 160, 117)),
+                      SizedBox(height: 10),
+                      Text(
+                        "Dodaj nove novosti",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 173, 160, 117),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final e = novosti[index];
+
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                colors: [Colors.white, Colors.purple.shade50],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black12, blurRadius: 5, offset: Offset(2, 2))
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.newspaper,
+                      size: 40, color: Color.fromARGB(255, 173, 160, 117)),
+                  const SizedBox(height: 10),
+                  Text(
+                    e.naziv ?? '',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 188, 131, 41)),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    e.opisNovisti ?? '',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Datum: ${e.datumObjave != null ? DateFormat('dd.MM.yyyy').format(DateTime.parse(e.datumObjave.toString()!)) : 'Nepoznato'}",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                        value: e.aktivna == 1,
+                        onChanged: null,
+                        activeColor: Colors.green,
+                        checkColor: Colors.white,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -92,7 +92,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                   color:Color.fromARGB(255, 173, 160, 117)),
               SizedBox(width: 8.0),
               Text(
-                "Salon ljepote naziv ${_salonLjepote?.nazivSalona}",
+                "${_salonLjepote?.nazivSalona}",
                 style: TextStyle(
                     color:Color.fromARGB(255, 173, 160, 117), fontSize: 16.0),
               ),
@@ -143,7 +143,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildNavIcon(context, Icons.home, WelcomeScreen(), "Home"),
+        _buildNavIcon(context, Icons.home, WelcomeScreen(), "Početna"),
         _buildNavIcon(context, Icons.article, UslugaNovostiScreen(),
             "Usluge i novosti"),
         _buildNavIcon(context, Icons.style, ProizvodScreen(), "Proizvodi"),
@@ -157,7 +157,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         SizedBox(height: 24),
         ElevatedButton(
           onPressed: _logout,
-          child: Text("Logout", style: TextStyle(color: Colors.white)),
+          child: Text("Odjava", style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 79, 6, 6),
           ),

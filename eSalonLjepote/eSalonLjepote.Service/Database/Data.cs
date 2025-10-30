@@ -349,6 +349,90 @@ namespace eSaljonLjepote.Services.Database
                     KorisnikId= 1002,
                     OpisRecenzije="Vrlo dobar",
                     Ocjena=5,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8181,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 5,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8102,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 5,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8103,
+                    KorisnikId = 1001,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 5,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8104,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 3,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8105,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 2,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8106,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 2,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8107,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 4,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8108,
+                    KorisnikId = 1001,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 2,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8109,
+                    KorisnikId = 1001,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 2,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8110,
+                    KorisnikId = 1001,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 4,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8111,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 5,
+                },
+                new Recenzije()
+                {
+                    RecenzijeId = 8112,
+                    KorisnikId = 1002,
+                    OpisRecenzije = "Vrlo dobar",
+                    Ocjena = 1,
                 });
             #endregion
 

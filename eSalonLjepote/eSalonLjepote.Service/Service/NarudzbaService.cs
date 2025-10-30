@@ -62,11 +62,18 @@ namespace eSalonLjepote.Service.Service
                 }
                
 
-                if (!string.IsNullOrWhiteSpace(search.KupacImePrezime))
+                if (!string.IsNullOrWhiteSpace(search.ImeKlijenta))
                 {
                     filteredQuery = filteredQuery.Where(n =>
-                        n.Korisnik.Ime.Contains(search.KupacImePrezime) ||
-                        n.Korisnik.Prezime.Contains(search.KupacImePrezime)
+                        n.Korisnik.Ime.Contains(search.ImeKlijenta)
+                      
+                    );
+                }
+                if (!string.IsNullOrWhiteSpace(search.PrezimeKlijenta))
+                {
+                    filteredQuery = filteredQuery.Where(n =>
+                        n.Korisnik.Ime.Contains(search.PrezimeKlijenta)
+
                     );
                 }
 

@@ -160,10 +160,10 @@ class _UslugaDetailsScreenState extends State<UslugaDetailsScreen> {
     try {
       if (_isEdit) {
         await _uslugaProvider.update(widget.usluga!.uslugaId!, request);
-        _showSnackbar("Proizvod je uspješno uređeno.");
+        _showSnackbar("Usluga uspjesno uređena.");
       } else {
         await _uslugaProvider.insert(request);
-        _showSnackbar("Proizvod je uspješno dodano.");
+        _showSnackbar("Usluga uspješno dodana.");
       }
 
       widget.onUslugaUpdate?.call();

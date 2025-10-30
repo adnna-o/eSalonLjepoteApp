@@ -21,6 +21,7 @@ import 'package:esalonljepote_desktop/screens/termin_details_screen.dart';
 import 'package:esalonljepote_desktop/screens/zaposleni_details_screen.dart';
 import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -199,6 +200,12 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/homepage.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           children: [
             _buildSearch(),
@@ -222,7 +229,7 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
                   _fetchZaposleni();
                 }
               },
-              child: Text("Add new Klijent!"),
+              child: Text("Dodaj novog zaposlenika!"),
             ),
           ],
         ),
@@ -239,41 +246,76 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
   }
 
   Widget _buildDataListView() {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
+    if (zaposleniResult == null || zaposleniResult!.result.isEmpty) {
+      return Center(
+        child: Text("Nema zaposlenog za prikaz"),
+      );
+    }
 
-    return Card(
-      elevation: 5,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Ime i prezime zaposlenog ')),
-            DataColumn(label: Text('Zanimanje')),
-            DataColumn(label: Text('Obrisi')),
-          ],
-          rows: zaposleniResult?.result.map((Zaposleni e) {
-                var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);
-                /* var zaposleni = zaposleniResult?.result
-                    .firstWhere((p) => p.zaposleniId == e.zaposleniId);*/
-                var korisnik = zaposleni != null
-                    ? korisnikResult?.result
-                        .firstWhere((k) => k.korisnikId == zaposleni.korisnikId)
-                    : null;
-                var imeZaposlenog =
-                    korisnik != null ? korisnik.ime : "Nepoznato";
-                var prezimeZaposlenog =
-                    korisnik != null ? korisnik.prezime : "Nepoznato";
-                /* var nazivUsluge = uslugaResult?.result
-                    .firstWhere((p) => p.uslugaId == e.uslugaId);*/
-                var korisnikSlika =
-                    korisnik != null ? korisnik.slika : "Nepoznato";
-
-                return DataRow(cells: [
-                  DataCell(Text('$imeZaposlenog $prezimeZaposlenog')),
-                  DataCell(Text(e.zanimanje.toString())),
-                  DataCell(
+    return GridView.builder(
+        padding: EdgeInsets.all(8.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+          childAspectRatio: 9 / 3,
+        ),
+        itemCount: zaposleniResult!.result.length,
+        itemBuilder: (context, index) {
+          Zaposleni e = zaposleniResult!.result[index];
+          var korisnik = korisnikResult?.result.firstWhere(
+            (k) => k.korisnikId == e.korisnikId,
+            orElse: () => Korisnik(ime: "Nepoznato", prezime: "", slika: ""),
+          );
+          return Card(
+            elevation: 4,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: InkWell(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ZaposleniDetailsScreen(
+                      onDataChanged: _fetchZaposleni,
+                      zaposleni: e,
+                    ),
+                  ),
+                );
+                if (result != null) _fetchZaposleni();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 173, 160, 117),
+                      Color.fromARGB(255, 192, 179, 139)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: (korisnik?.slika != null &&
+                              korisnik!.slika!.isNotEmpty)
+                          ? MemoryImage(base64Decode(korisnik.slika!))
+                          : null,
+                      child:
+                          (korisnik?.slika == null || korisnik!.slika!.isEmpty)
+                              ? Icon(Icons.person, size: 30)
+                              : null,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${korisnik?.ime ?? "Nepoznato"} ${korisnik?.prezime ?? ""}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 4),
+                    Text('Zanimanje: ${e.zanimanje}'),
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
@@ -281,16 +323,16 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Delete Employee'),
+                              title: Text('Obrisi zaposlenog'),
                               content: Text(
-                                  'Are you sure you want to delete this employee?'),
+                                  'Da li ste sigurni da zelite obrisati zaposlenog?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context)
                                         .pop(); // zatvori dialog
                                   },
-                                  child: Text('Cancel'),
+                                  child: Text('Ugasi'),
                                 ),
                                 TextButton(
                                   onPressed: () async {
@@ -301,7 +343,7 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
                                     // refresaj listu da se vidi promjena
                                     _refreshZaposleni();
                                   },
-                                  child: Text('Delete'),
+                                  child: Text('Obrisi'),
                                 ),
                               ],
                             );
@@ -309,12 +351,11 @@ class _ZaposleniScreen extends State<ZaposleniScreen> {
                         );
                       },
                     ),
-                  ),
-                ]);
-              }).toList() ??
-              [],
-        ),
-      ),
-    );
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

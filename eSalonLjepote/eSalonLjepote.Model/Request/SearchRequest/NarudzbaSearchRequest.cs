@@ -23,7 +23,10 @@ namespace eSalonLjepote.Model.Request.SearchRequest
         public decimal? IznosNarudzbe { get; set; }
 
        // public int? NarudzbaId { get; set; }            // Broj narudžbe
-        public string? KupacImePrezime { get; set; }    // Kupac
+        public string? ImeKlijenta { get; set; }    // Kupac
+        public string? PrezimeKlijenta { get; set; }    // Kupac
+
+
         public string? SadrzajNarudzbe { get; set; }    // Proizvod (naziv)
         public DateTime? DatumOd { get; set; }          // Period od
         public DateTime? DatumDo { get; set; }          // Period do
