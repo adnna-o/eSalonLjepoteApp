@@ -48,14 +48,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'eSalon Ljepote',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
         useMaterial3: true,
+        fontFamily: 'Poppins',
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
       routes: {
-        '/register':(context) => RegistracijaScreen()
+        '/register': (context) => RegistracijaScreen(),
       },
     );
   }
@@ -72,9 +74,7 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   late KorisnikProvider _korisnikProvider;
-  int? loggedInUserID;
   bool _isLoading = false;
-  bool _isHover = false;
 
   @override
   void initState() {
@@ -91,15 +91,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
-    var username = _usernameController.text;
-    var password = _passwordController.text;
-
-    Authorization.username = username;
-    Authorization.password = password;
+    Authorization.username = _usernameController.text;
+    Authorization.password = _passwordController.text;
 
     try {
       Authorization.korisnik = await _korisnikProvider.Authenticate();
@@ -108,48 +103,35 @@ class _LoginPageState extends State<LoginPage> {
               .any((role) => role.uloga?.nazivUloge == "Korisnik") ==
           true) {
         Authorization.userId = Authorization.korisnik?.korisnikId;
-        setState(() {
-          loggedInUserID = Authorization.korisnik?.korisnikId;
-        });
-
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ),
-        );
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => HomeScreen()));
       } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            content: Text(
-                "Vaš korisnički račun nema permisije za pristup korisnik panelu!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              )
-            ],
-          ),
-        );
+        _showMessage(
+            "Vaš korisnički račun nema dozvolu za pristup korisničkom panelu!");
       }
     } on Exception {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                content: Text("Pogrešno korisničko ime ili lozinka!"),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("OK"))
-                ],
-              ));
+      _showMessage("Pogrešno korisničko ime ili lozinka!");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
+  }
+
+  void _showMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              content: Text(message,
+                  style: const TextStyle(fontSize: 16, color: Colors.black)),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text("OK",
+                        style: TextStyle(color: Colors.pinkAccent)))
+              ],
+            ));
   }
 
   @override
@@ -157,130 +139,140 @@ class _LoginPageState extends State<LoginPage> {
     _korisnikProvider = context.read<KorisnikProvider>();
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text("User login!"),
-        ),
-        body: Stack(children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.9,
-              child: Image.asset(
-                "assets/images/images.png",
-                fit: BoxFit.cover,
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
+            // Gradient pozadina
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFE3A6B2), Color(0xFFFAE5E9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
             ),
-          ),
-          Center(
-            child: Container(
-              constraints: BoxConstraints(maxWidth: 400, maxHeight: 500),
-              child: Container(
-                color:
-                    const Color.fromARGB(255, 202, 202, 202).withOpacity(0.7),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Opacity(
-                          opacity: 0.7,
-                          child: Image.asset(
-                            "assets/images/images.png",
-                            fit: BoxFit.cover,
-                            width: 370,
-                            height: 150,
-                          )),
-                      SizedBox(
-                        height: 66,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5),
+
+            // Glavni sadržaj scrollable
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: 450,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 40, horizontal: 30),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.spa,
+                            color: Colors.pinkAccent, size: 80),
+                        const SizedBox(height: 16),
+                        const Text(
+                          "Dobrodošli u eSalon Ljepote",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
                         ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: "Username",
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon:
-                                Icon(Icons.account_circle, color: Colors.black),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
-                          ),
+                        const SizedBox(height: 30),
+
+                        // Username
+                        TextField(
                           controller: _usernameController,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: "Password",
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon:
-                                Icon(Icons.password, color: Colors.black),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
+                            labelText: "Korisničko ime",
+                            prefixIcon: const Icon(Icons.person_outline),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        // Password
+                        TextField(
                           controller: _passwordController,
                           obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: "Lozinka",
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _isLoading
-                          ? CircularProgressIndicator()
-                          : SizedBox(
-                              width: 370,
-                              height: 50,
-                              child: ElevatedButton(
+                        const SizedBox(height: 25),
+
+                        // Login button
+                        _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.pinkAccent,
+                              )
+                            : ElevatedButton(
                                 onPressed: _login,
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<
-                                          Color>(
-                                      const Color.fromARGB(255, 34, 78, 57)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.pinkAccent,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 80),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  elevation: 4,
                                 ),
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white),
+                                child: const Text(
+                                  "Prijava",
+                                  style: TextStyle(fontSize: 18),
                                 ),
-                              )),
-                    ],
+                              ),
+
+                        const SizedBox(height: 20),
+
+                        // Register link
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Text(
+                              "Nemate račun? ",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            GestureDetector(
+                              onTap: () =>
+                                  Navigator.of(context).pushNamed('/register'),
+                              child: const Text(
+                                "Registrujte se!",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.pinkAccent,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Don't have an account? ",
-                style:
-                    TextStyle(color: Color.fromARGB(255, 6, 6, 6)),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/register');
-                },
-                child: const Text(
-                  "Register!",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ]));
+          ],
+        );
+      }),
+    );
   }
 }

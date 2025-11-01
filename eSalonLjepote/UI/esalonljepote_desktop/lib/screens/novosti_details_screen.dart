@@ -23,6 +23,7 @@ import 'package:esalonljepote_desktop/widget/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,7 +46,6 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
   List<Novosti>? novostiResult;
 
   String? _selectedKorisnikId;
-  String? _zaposleniIme;
 
   late Map<String, dynamic> _initialValue;
 
@@ -60,7 +60,7 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
       'novostiId': widget.novosti?.novostiId,
       'naziv': widget.novosti?.naziv,
       'opisNovisti': widget.novosti?.opisNovisti,
-      'datumObjave': widget.novosti?.datumObjave ?? todayFormatted,
+      'datumObjave': widget.novosti?.datumObjave ?? DateTime.now(),
       'korisnikId': widget.novosti?.korisnikId,
       'aktivna': widget.novosti?.aktivna,
     };
@@ -121,6 +121,11 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
 
       mutableFormData['aktivna'] = (mutableFormData['aktivna'] == true) ? 1 : 0;
 
+      if (mutableFormData['datumObjave'] is DateTime) {
+        mutableFormData['datumObjave'] =
+            DateFormat('yyyy-MM-dd').format(mutableFormData['datumObjave']);
+      }
+
       try {
         if (widget.novosti == null) {
           await _novostiProvider.insert(Novosti.fromJson(mutableFormData));
@@ -139,7 +144,8 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
       } catch (e) {
         print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Greska u dodavanju nove novosti. Probajte opet.')),
+          SnackBar(
+              content: Text('Greska u dodavanju nove novosti. Probajte opet.')),
         );
       }
     }
@@ -250,55 +256,46 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
                 SizedBox(
                   height: 16,
                 ),
-                FormBuilderTextField(
+                FormBuilderDateTimePicker(
+                  name: 'datumObjave',
                   decoration: InputDecoration(
                     labelText: "Datum objave",
                     border: OutlineInputBorder(),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
-                  name: "datumObjave",
-                  readOnly: true,
-                  initialValue: _initialValue['datumObjave'],
+                  inputType: InputType.date,
+                  format: DateFormat('yyyy-MM-dd'),
+                  initialValue: _initialValue['datumObjave'] as DateTime?,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Ovo polje je obavezno! Datum u formatu yyyy-MM-dd';
-                    }
+                    if (value == null) return 'Odaberite datum objave.';
                     return null;
                   },
                 ),
                 SizedBox(height: 16),
-                FormBuilderDropdown<String>(
-                    name: 'korisnikId',
-                    decoration: InputDecoration(
-                      labelText: 'Korisnik',
-                    ),
-                    items: korisnikResult?.map((klijent) {
-                          var korisnik = korisnikResult?.firstWhere(
-                            (k) => k.korisnikId == klijent.korisnikId,
-                          );
-
-                          var displayText = korisnik != null
-                              ? "${korisnik.ime} ${korisnik.prezime}"
-                              : "Nepoznato";
+                korisnikResult != null
+                    ? FormBuilderDropdown<String>(
+                        name: 'korisnikId',
+                        decoration: InputDecoration(labelText: 'Korisnik'),
+                        items: korisnikResult!.map((klijent) {
                           return DropdownMenuItem<String>(
                             value: klijent.korisnikId.toString(),
-                            child: Text(displayText),
+                            child: Text("${klijent.ime} ${klijent.prezime}"),
                           );
-                        }).toList() ??
-                        [],
-                    initialValue: _initialValue['korisnikId']?.toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedKorisnikId = value;
-                      });
-                      print("Odabrani klijentId: $_selectedKorisnikId");
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Ovo polje je obavezno!';
-                      }
-                      return null;
-                    }),
+                        }).toList(),
+                        initialValue: (_initialValue['korisnikId'] != null &&
+                                korisnikResult!.any((k) =>
+                                    k.korisnikId ==
+                                    _initialValue['korisnikId']))
+                            ? _initialValue['korisnikId'].toString()
+                            : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Ovo polje je obavezno!';
+                          return null;
+                        },
+                      )
+                    : CircularProgressIndicator(), // ili SizedBox()
+
                 SizedBox(height: 16.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -330,7 +327,7 @@ class _NovostiDetailsScreen extends State<NovostiDetailsScreen> {
         ),
       ),
       title: widget.novosti != null
-          ? "Novosti: ${_zaposleniIme}"
+          ? "Novosti: ${widget.novosti!.naziv}"
           : "Detalji novosti",
     );
   }

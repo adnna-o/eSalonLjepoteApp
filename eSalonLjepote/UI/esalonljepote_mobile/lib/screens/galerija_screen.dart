@@ -54,28 +54,39 @@ class _GalerijaScreen extends State<GalerijaScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Container(
-        child: Column(
-          children: [
-            Expanded(child: _buildDataListView()),
-            const SizedBox(
-              height: 8.0,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _refreshGalerija() async {
     var galerijaData = await _galerijaProvider.get();
 
     setState(() {
       galerijaResult = galerijaData;
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MasterScreenWidget(
+      child: Stack(
+        children: [
+          // POZADINSKA SLIKA SA OPACITY
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.3,
+              child: Image.asset(
+                'assets/images/stuff.png', // zamijeni svojom slikom
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // GRID VIEW SLIKA
+          Column(
+            children: [
+              Expanded(child: _buildDataListView()),
+              const SizedBox(height: 8.0),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildDataListView() {
@@ -88,45 +99,31 @@ class _GalerijaScreen extends State<GalerijaScreen> {
       child: GridView.builder(
         shrinkWrap: true,
         itemCount: galerijaResult!.result.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, 
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 250, // maksimalna širina jednog itema
           mainAxisSpacing: 16.0,
           crossAxisSpacing: 16.0,
-          childAspectRatio: 3 / 4, 
+          childAspectRatio: 4 / 5,
         ),
         itemBuilder: (context, index) {
           final galerija = galerijaResult!.result[index];
 
-       
-
           return Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: galerija.slika != null && galerija.slika!.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12)),
-                          child: Image.memory(
-                            base64Decode(galerija.slika!),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
-                          ),
-                          child: const Center(child: Text('Nema slike')),
-                        ),
-                ),
-              ],
+            elevation: 6,
+            shadowColor: Colors.black26,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
+            clipBehavior: Clip.antiAlias,
+            child: galerija.slika != null && galerija.slika!.isNotEmpty
+                ? Image.memory(
+                    base64Decode(galerija.slika!),
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    color: Colors.grey[300],
+                    child: const Center(child: Text('Nema slike')),
+                  ),
           );
         },
       ),

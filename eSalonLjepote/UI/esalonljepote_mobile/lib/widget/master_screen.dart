@@ -20,14 +20,14 @@ import 'package:esalonljepote_mobile/screens/preporuceni_proizvodi_screen.dart';
 import 'package:esalonljepote_mobile/screens/proizvod_screen.dart';
 import 'package:esalonljepote_mobile/screens/termini_screen.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 class MasterScreenWidget extends StatefulWidget {
-  Widget? child;
-  String? title;
-  Widget? title_widget;
-  MasterScreenWidget({this.child, this.title, this.title_widget, Key? key})
+  final Widget? child;
+  final String? title;
+  final Widget? title_widget;
+
+  const MasterScreenWidget({this.child, this.title, this.title_widget, Key? key})
       : super(key: key);
 
   @override
@@ -36,14 +36,12 @@ class MasterScreenWidget extends StatefulWidget {
 
 class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   late SalonLjepoteProvider _salonLjepoteProvider;
-
   SalonLjepote? _salonLjepote;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _salonLjepoteProvider = context.read<SalonLjepoteProvider>();
-
     _fetchSalonLjepoteDetails();
   }
 
@@ -54,127 +52,94 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 132, 77, 97),
-        automaticallyImplyLeading: false,
-        title: widget.title_widget ??
-            Text(
-              widget.title ?? "",
-              style: TextStyle(
-                color: Colors.white,
-              ),
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return SafeArea(
+      child: Scaffold(
+        appBar: null,
+        body: Column(
+          children: [
+            // Glavni sadržaj
+            Expanded(
+              child: widget.child ?? Container(),
             ),
-        actions: [
-          _buildNavBarIcons(context),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(child: widget.child!),
-          _buildFooter(),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isSmallScreen = constraints.maxWidth < 500;
 
-  Widget _buildFooter() {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.local_hospital,
-                  color: Color.fromARGB(255, 132, 77, 97)),
-              SizedBox(width: 8.0),
-              Text(
-                "Salon ljepote naziv ${_salonLjepote?.nazivSalona}",
-                style: TextStyle(
-                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 16.0),
-              ),
-            ],
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: isSmallScreen ? 8 : 16,
+                    runSpacing: isSmallScreen ? 8 : 10,
+                    children: [
+                      _buildNavIcon(context, Icons.home, HomeScreen(), "Home"),
+                      _buildNavIcon(
+                          context, Icons.schedule, TerminScreen(), "Termini"),
+                      _buildNavIcon(context, Icons.photo_library, ProizvodScreen(),
+                          "Proizvodi"),
+                      _buildNavIcon(context, Icons.shopping_bag,
+                          PreporuceniProizvodiScreen(), "Preporučeni"),
+                      _buildNavIcon(context, Icons.shopping_cart, CartScreen(),
+                          "Korpa"),
+                      _buildNavIcon(context, Icons.image, GalerijaScreen(),
+                          "Galerija"),
+                      _buildNavIcon(context, Icons.star_rate,
+                          OcjenaProizvodDetailsScreen(), "Ocjene proizvoda"),
+                      _buildNavIcon(context, Icons.people_alt, OcjeneTimaScreen(),
+                          "Ocjene tima"),
+                      _buildNavIcon(context, Icons.person,
+                          KorisnikProfileScreen(), "Korisnik profil"),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-          SizedBox(width: 16.0),
-          Row(
-            children: [
-              Icon(Icons.phone, color: Color.fromARGB(255, 170, 169, 169)),
-              SizedBox(width: 8.0),
-              Text(
-                "${_salonLjepote?.telefon}",
-                style: TextStyle(
-                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
-              ),
-            ],
-          ),
-          SizedBox(width: 16.0),
-          Row(
-            children: [
-              Icon(Icons.email, color: Color.fromARGB(255, 132, 77, 97)),
-              SizedBox(width: 8.0),
-              Text(
-                "${_salonLjepote?.email}",
-                style: TextStyle(
-                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
-              ),
-            ],
-          ),
-          SizedBox(width: 16.0),
-          Row(
-            children: [
-              Icon(Icons.location_on, color: Color.fromARGB(255, 132, 77, 97)),
-              SizedBox(width: 8.0),
-              Text(
-                "${_salonLjepote?.adresa}",
-                style: TextStyle(
-                    color: Color.fromARGB(255, 132, 77, 97), fontSize: 14.0),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
-    );
-  }
-
-  Widget _buildNavBarIcons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildNavIcon(context, Icons.home, HomeScreen(), "Home"),
-        _buildNavIcon(context, Icons.schedule, TerminScreen(), "Termini"),
-        _buildNavIcon(context, Icons.photo_library, ProizvodScreen(), "Pregled prozivoda"),
-        _buildNavIcon(context, Icons.shopping_bag, PreporuceniProizvodiScreen(), "Preppruceni"),
-        _buildNavIcon(
-            context, Icons.newspaper, CartScreen(), "Korpa"),
-        _buildNavIcon(context, Icons.people, GalerijaScreen(), "Galerija"),
-        _buildNavIcon(context, Icons.receipt_long, OcjenaProizvodDetailsScreen(), "Ocjene proizvoda"),
-        _buildNavIcon(context, Icons.history, OcjeneTimaScreen(), "Ocjene tima"),
-        _buildNavIcon(context, Icons.people_alt, KorisnikProfileScreen(), "Korisnik profile"),
-      ],
     );
   }
 
   Widget _buildNavIcon(
       BuildContext context, IconData icon, Widget screen, String tooltip) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => screen),
-          );
-        },
-        child: Tooltip(
-          message: tooltip,
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => screen),
+        );
+      },
+      borderRadius: BorderRadius.circular(50),
+      child: Tooltip(
+        message: tooltip,
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 245, 240, 240),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                blurRadius: 6,
+                offset: const Offset(2, 3),
+              ),
+            ],
+          ),
           child: Icon(
             icon,
-            color: Color.fromARGB(255, 207, 181, 185),
-            size: 50,
+            color: const Color.fromARGB(255, 207, 181, 185),
+            size: 32,
           ),
         ),
       ),

@@ -144,16 +144,24 @@ class _UslugaDetailsScreenState extends State<UslugaDetailsScreen> {
     final naziv = (request['nazivUsluge'] ?? '').toString().trim();
     request['nazivUsluge'] = naziv;
 
-    final cijenaStr =
-        (request['cijena'] ?? '').toString().replaceAll(',', '.').trim();
-    final cijena = double.tryParse(cijenaStr);
+    final cijenaRaw = request['cijena'];
+    double? cijena;
+
+    if (cijenaRaw is double) {
+      cijena = cijenaRaw;
+    } else if (cijenaRaw is String) {
+      cijena = double.tryParse(cijenaRaw.replaceAll(',', '.').trim());
+    }
+
     if (cijena == null || cijena <= 0) {
       _formKey.currentState?.fields['cijena']
           ?.invalidate('Unesite cijenu veću od 0 (npr. 12.50).');
       _showSnackbar("Cijena mora biti veća od 0.");
       return;
     }
+
     request['cijena'] = cijena;
+
     final trajanjeUsluge = (request['trajanje'] ?? '').toString().trim();
     request['trajanje'] = trajanjeUsluge;
 
@@ -179,7 +187,7 @@ class _UslugaDetailsScreenState extends State<UslugaDetailsScreen> {
         initialValue: {
           'uslugaId': widget.usluga?.uslugaId?.toString(),
           'nazivUsluge': widget.usluga?.nazivUsluge,
-          'cijena': widget.usluga?.cijena,
+          'cijena': widget.usluga?.cijena.toString(),
           'trajanje': widget.usluga?.trajanje,
         },
         child: Column(
@@ -267,7 +275,9 @@ class _UslugaDetailsScreenState extends State<UslugaDetailsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
@@ -299,8 +309,6 @@ class _UslugaDetailsScreenState extends State<UslugaDetailsScreen> {
           ],
         ));
   }
-
-
 
   void _showErrorDialog(String message) {
     showDialog(

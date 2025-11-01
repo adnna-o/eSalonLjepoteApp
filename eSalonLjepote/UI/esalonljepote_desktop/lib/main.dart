@@ -12,7 +12,9 @@ import 'package:esalonljepote_desktop/providers/usluga_provider.dart';
 import 'package:esalonljepote_desktop/providers/zaposleni_provider.dart';
 import 'package:esalonljepote_desktop/screens/termin_screen.dart';
 import 'package:esalonljepote_desktop/utils/util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:esalonljepote_desktop/providers/korisnik_provider.dart';
 import 'package:esalonljepote_desktop/providers/korisnik_uloga_provider.dart';
@@ -143,51 +145,41 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     _korisnikProvider = context.read<KorisnikProvider>();
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login admin!"),
-      ),
       body: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
               opacity: 0.9,
               child: Image.asset(
-                "assets/images/LoginBackground.jpg",
+                "assets/images/homepage.png",
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          Center(
+          Align(
+            alignment: Alignment.bottomCenter,
+            child:Padding(padding: const EdgeInsets.only(bottom: 100),
             child: Container(
-              constraints: const BoxConstraints(maxHeight: 500, maxWidth: 400),
+              constraints: const BoxConstraints(maxHeight: 300, maxWidth: 400),
               child: Card(
-                color: Colors.white.withOpacity(0.8),
+                color: Color.fromARGB(255, 125, 111, 58).withOpacity(0.8),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Opacity(
-                          opacity: 0.7,
-                          child: Image.asset(
-                            "assets/images/images.png",
-                            fit: BoxFit.cover,
-                            width: 370,
-                            height: 150,
-                          )),
-                      SizedBox(
-                        height: 30,
-                      ),
+                      SizedBox(height: 36,),
+                      
                       Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(41, 207, 200, 200),
+                          color: Color.fromARGB(255, 173, 160, 117),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: "Username",
-                            labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.white),
                             prefixIcon:
-                                Icon(Icons.account_circle, color: Colors.black),
+                                Icon(Icons.account_circle, color: Colors.white),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 12),
@@ -200,15 +192,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(41, 188, 184, 192),
+                          color: Color.fromARGB(255, 173, 160, 117),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: "Password",
-                            labelStyle: TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(color: Colors.white),
                             prefixIcon:
-                                Icon(Icons.password, color: Colors.black),
+                                Icon(Icons.password, color: Colors.white),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 12),
@@ -229,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all<
                                           Color>(
-                                      const Color.fromARGB(255, 63, 125, 137)),
+                                      Color.fromARGB(255, 173, 160, 117)),
                                 ),
                                 child: Text(
                                   "Login",
@@ -244,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-        ],
+      ),],
       ),
     );
   }

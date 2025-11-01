@@ -29,7 +29,6 @@ class _CartScreenState extends State<CartScreen> {
 
   SearchResult<Korpa>? _korpa;
   bool _isLoading = true;
-
   DateTime? _selectedDate;
 
   static const String PAYPAL_CLIENT_ID =
@@ -176,7 +175,7 @@ class _CartScreenState extends State<CartScreen> {
       subtotalEurCents += unitEurCents * qty;
 
       return {
-        "name": proizvod.nazivProizvoda ?? "Nepoznato jelo",
+        "name": proizvod.nazivProizvoda ?? "Nepoznat proizvod",
         "quantity": qty,
         "price": _eurStrFromCents(unitEurCents),
         "currency": PAYPAL_CURRENCY
@@ -204,7 +203,7 @@ class _CartScreenState extends State<CartScreen> {
             "shipping_discount": 0
           }
         },
-        "description": "Plaćanje narudžbe u eRestoran aplikaciji",
+        "description": "Plaćanje u eSalonLjepote aplikaciji",
         "item_list": {
           "items": items,
         }
@@ -271,10 +270,6 @@ class _CartScreenState extends State<CartScreen> {
 
           if (!mounted) return;
           _toast('Narudžba #$id kreirana!');
-          /* Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => OrdersScreen()),
-          );*/
         },
         onError: (error) {
           debugPrint("PayPal onError: $error");
@@ -324,10 +319,6 @@ class _CartScreenState extends State<CartScreen> {
       );
       if (!mounted) return;
       _toast('Narudžba #$id kreirana (gotovina).');
-      /* Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrdersScreen()),
-      );*/
     } catch (e) {
       _toast('Greška pri kreiranju narudžbe: $e');
     }
@@ -383,24 +374,12 @@ class _CartScreenState extends State<CartScreen> {
                             icon:
                                 const Icon(Icons.arrow_back_rounded, size: 18),
                             label: const Text("Nazad"),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
                           ),
                           rightButton: ElevatedButton.icon(
                             onPressed:
                                 canCheckout ? _startPaypalCheckout : null,
                             icon: const Icon(Icons.send_rounded, size: 18),
                             label: const Text("Pošalji zahtjev"),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
                           ),
                         ),
                       ),
@@ -418,7 +397,7 @@ class _CartScreenState extends State<CartScreen> {
 
                             final qty = item.kolicina ?? 0;
                             final unitBAM = proizvod?.cijena ?? 0;
-                            
+
                             final lineTotalBAM = unitBAM * qty;
 
                             return _CartLine(
@@ -439,22 +418,7 @@ class _CartScreenState extends State<CartScreen> {
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                        child: _RecommendationBanner(
-                          text: "Drugi trenutno gledaju ove artikle",
-                          actionText: "Vidi preporuke",
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    PreporuceniProizvodiScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: Row(
@@ -463,13 +427,6 @@ class _CartScreenState extends State<CartScreen> {
                               child: OutlinedButton(
                                 onPressed:
                                     canCheckout ? _startCashCheckout : null,
-                                style: OutlinedButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
                                 child: const Text('Plati gotovinom'),
                               ),
                             ),
@@ -478,13 +435,6 @@ class _CartScreenState extends State<CartScreen> {
                               child: ElevatedButton(
                                 onPressed:
                                     canCheckout ? _startPaypalCheckout : null,
-                                style: ElevatedButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
                                 child: const Text('Plati sa PayPal'),
                               ),
                             ),
@@ -498,41 +448,20 @@ class _CartScreenState extends State<CartScreen> {
   }
 }
 
+/// --- WIDGETI KOJI SU NEDOSTAJALI --- ///
+
 class _DateChip extends StatelessWidget {
   final String label;
-  final VoidCallback? onTap;
-  const _DateChip({required this.label, this.onTap});
+  final VoidCallback onTap;
+
+  const _DateChip({required this.label, required this.onTap, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF3CD),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFFFE69C)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.date_range_rounded, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Icon(Icons.chevron_right_rounded, size: 18),
-          ],
-        ),
-      ),
+    return ActionChip(
+      label: Text(label),
+      onPressed: onTap,
     );
   }
 }
@@ -541,11 +470,8 @@ class _DetailRowData {
   final IconData icon;
   final String title;
   final String subtitle;
-  _DetailRowData({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
+
+  _DetailRowData({required this.icon, required this.title, required this.subtitle});
 }
 
 class _DetailsCard extends StatelessWidget {
@@ -557,42 +483,27 @@ class _DetailsCard extends StatelessWidget {
     required this.rows,
     required this.leftButton,
     required this.rightButton,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF7E6),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
-      ),
+    return Card(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            for (int i = 0; i < rows.length; i++) ...[
-              ListTile(
-                leading: Icon(rows[i].icon, size: 22),
-                title: Text(
-                  rows[i].title,
-                  style: const TextStyle(fontSize: 13, color: Colors.black54),
-                ),
-                subtitle: Text(
-                  rows[i].subtitle,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                dense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-              ),
-              if (i != rows.length - 1) const Divider(height: 0, thickness: .6),
-            ],
-            const SizedBox(height: 10),
+            ...rows
+                .map((r) => ListTile(
+                      leading: Icon(r.icon),
+                      title: Text(r.title),
+                      trailing: Text(r.subtitle),
+                    ))
+                .toList(),
             Row(
               children: [
                 Expanded(child: leftButton),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(child: rightButton),
               ],
             ),
@@ -616,52 +527,25 @@ class _CartLine extends StatelessWidget {
     required this.trailing,
     required this.onDelete,
     this.imageBytes,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
-      ),
+    return Card(
       child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: imageBytes != null
-              ? Image.memory(
-                  imageBytes!,
-                  width: 56,
-                  height: 56,
-                  fit: BoxFit.cover,
-                )
-              : Container(
-                  width: 56,
-                  height: 56,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image_not_supported_rounded),
-                ),
-        ),
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
+        leading: imageBytes != null
+            ? Image.memory(imageBytes!, width: 50, height: 50, fit: BoxFit.cover)
+            : const Icon(Icons.shopping_bag),
+        title: Text(title),
         subtitle: Text(subtitle),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              trailing,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            ),
-            const SizedBox(height: 6),
-            GestureDetector(
-              onTap: onDelete,
-              child:
-                  const Icon(Icons.delete_outline_rounded, color: Colors.red),
+            Text(trailing),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
             ),
           ],
         ),
@@ -679,44 +563,19 @@ class _RecommendationBanner extends StatelessWidget {
     required this.text,
     required this.actionText,
     required this.onPressed,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFEDE0),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFD7BF)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            const Icon(Icons.local_fire_department_rounded, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-          ]),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              child: Text(actionText),
-            ),
-          )
-        ],
+    return Card(
+      color: Colors.orange[50],
+      child: ListTile(
+        title: Text(text),
+        trailing: TextButton(
+          onPressed: onPressed,
+          child: Text(actionText),
+        ),
       ),
     );
   }

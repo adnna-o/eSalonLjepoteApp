@@ -38,7 +38,7 @@ class _ReportScreen extends State<ReportScreen> {
     Map<String, dynamic> filter = {};
 
     if (_selectedDate != null) {
-      filter['DatumNarudzbe'] = _selectedDate!.toIso8601String();
+      filter['DatumNarudzbe'] = DateFormat('yyyy-MM-dd').format(_selectedDate!);
     }
     if (_kupacController.text.trim().isNotEmpty) {
       filter['KupacImePrezime'] = _kupacController.text.trim();
@@ -115,7 +115,6 @@ class _ReportScreen extends State<ReportScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-
                 Expanded(
                   child: TextField(
                     controller: _kupacController,
@@ -128,7 +127,6 @@ class _ReportScreen extends State<ReportScreen> {
               ],
             ),
             const SizedBox(height: 16),
-
             Row(
               children: [
                 Expanded(
@@ -143,7 +141,6 @@ class _ReportScreen extends State<ReportScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-
                 Expanded(
                   child: TextField(
                     controller: _iznosDoController,
@@ -158,7 +155,6 @@ class _ReportScreen extends State<ReportScreen> {
               ],
             ),
             const SizedBox(height: 16),
-
             Row(
               children: [
                 ElevatedButton(
@@ -174,7 +170,8 @@ class _ReportScreen extends State<ReportScreen> {
                         .read<NarudzbaProvider>()
                         .getIzvjestajHistorijeNarudzbi(filter: {
                       if (_selectedDate != null)
-                        'DatumNarudzbe': _selectedDate!.toIso8601String(),
+                        'DatumNarudzbe':
+                            DateFormat('yyyy-MM-dd').format(_selectedDate!),
                       if (_kupacController.text.trim().isNotEmpty)
                         'KupacImePrezime': _kupacController.text.trim(),
                       if (_iznosOdController.text.trim().isNotEmpty)
@@ -189,18 +186,17 @@ class _ReportScreen extends State<ReportScreen> {
 
                     final narudzbeSaProizvodima =
                         await _loadNarudzbeSaProizvodima(rawNarudzbe);
-                         final narudzbeSaKupcima =
+                    final narudzbeSaKupcima =
                         await _loadNarudzbeSaKupcem(rawNarudzbe);
 
-                    await _generatePdfHistorija(
-                        'Filtrirane_narudzbe', narudzbeSaProizvodima, narudzbeSaKupcima);
+                    await _generatePdfHistorija('Filtrirane_narudzbe',
+                        narudzbeSaProizvodima, narudzbeSaKupcima);
                   },
                   child: Text('Generiraj PDF izvještaj'),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-
             Expanded(
               child: FutureBuilder<List<Narudzba>>(
                 future: futureHistorija,
@@ -223,9 +219,11 @@ class _ReportScreen extends State<ReportScreen> {
                               .map((k) => "${k.ime ?? ''} ${k.prezime ?? ''}")
                               .join(', ')
                           : '';
+                      final dateFormat = DateFormat('yyyy-MM-dd');
                       String datum = nar.datumNarudzbe != null
                           ? dateFormat.format(nar.datumNarudzbe!)
                           : '';
+
                       String iznos =
                           nar.iznosNarudzbe?.toStringAsFixed(2) ?? '0.00';
                       return ListTile(
@@ -250,30 +248,30 @@ class _ReportScreen extends State<ReportScreen> {
     for (var nar in narudzbe) {
       if (nar.proizvodId != null) {
         final proizvod = await proizvodProvider.getById(nar.proizvodId!);
-        nar.proizvod = [proizvod]; 
+        nar.proizvod = [proizvod];
       }
     }
     return narudzbe;
   }
 
-
-  Future<List<Narudzba>> _loadNarudzbeSaKupcem(
-      List<Narudzba> narudzbe) async {
+  Future<List<Narudzba>> _loadNarudzbeSaKupcem(List<Narudzba> narudzbe) async {
     final _korisnikProvider = context.read<KorisnikProvider>();
 
     for (var kupac in narudzbe) {
       if (kupac.korisnikId != null) {
         final kupci = await _korisnikProvider.getById(kupac.korisnikId!);
-        kupac.korisnik = [kupci]; 
+        kupac.korisnik = [kupci];
       }
     }
     return narudzbe;
   }
-  Future<void> _generatePdfHistorija(
-      String reportName, List<Narudzba> data, List<Narudzba> narudzbeSaKupcima) async {
+
+  Future<void> _generatePdfHistorija(String reportName, List<Narudzba> data,
+      List<Narudzba> narudzbeSaKupcima) async {
     final pdf = pw.Document();
     final fontData = await rootBundle.load('assets/fonts/ttf/DejaVuSans.ttf');
     final ttf = pw.Font.ttf(fontData);
+    final dateFormat = DateFormat('dd.MM.yyyy');
 
     pdf.addPage(
       pw.MultiPage(
@@ -290,7 +288,7 @@ class _ReportScreen extends State<ReportScreen> {
               ),
             ),
             pw.Paragraph(
-              text: "Datum generiranja: ${DateTime.now().toString()}",
+              text: "Datum generiranja: ${dateFormat.format(DateTime.now())}",
               style: pw.TextStyle(
                   fontSize: 12, fontStyle: pw.FontStyle.italic, font: ttf),
             ),
@@ -315,13 +313,15 @@ class _ReportScreen extends State<ReportScreen> {
 
   pw.Widget _buildTableHistorija(List<Narudzba> data, pw.Font ttf) {
     final headers = ['Kupac', 'Datum kupovine', 'Sadržaj narudžbe', 'Iznos'];
-
+    final dateFormat = DateFormat('dd.MM.yyyy');
     final dataRows = data.map((nar) {
       String kupac = nar.korisnik!
-              .map((k) => "${k.ime ?? ''} ${k.prezime ?? ''}")
-              .join(', ');
+          .map((k) => "${k.ime ?? ''} ${k.prezime ?? ''}")
+          .join(', ');
 
-      String datum = nar.datumNarudzbe.toString();
+      String datum = nar.datumNarudzbe != null
+          ? dateFormat.format(nar.datumNarudzbe!)
+          : '';
       String proizvod = nar.proizvod!
           .map((k) =>
               "Naziv proizvoda: ${k.nazivProizvoda ?? ''} \n Cijena: ${k.cijena ?? ''} \n")

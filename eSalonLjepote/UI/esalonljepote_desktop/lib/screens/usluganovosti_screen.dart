@@ -163,56 +163,70 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
 
           final e = usluge[index];
 
-          return Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/homepage.png'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                    Color.fromARGB(135, 132, 132, 132), BlendMode.lighten),
+          return GestureDetector(
+            onTap: () async {
+              final result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UslugaDetailsScreen(
+                    usluga: e, 
+                    onUslugaUpdate: _fetchUsluga, 
+                  ),
+                ),
+              );
+              if (result != null) _fetchUsluga();
+            },
+            child: Container(
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/homepage.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                      Color.fromARGB(135, 132, 132, 132), BlendMode.lighten),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 6,
+                      offset: Offset(2, 2)),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26, blurRadius: 6, offset: Offset(2, 2)),
-              ],
-            ),
-            
-            child: Card(
-              color: Colors.transparent,
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      e.nazivUsluge ?? '',
-                      style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '${e.cijena} KM',
-                      style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Trajanje: ${e.trajanje} min',
-                      style:
-                          const TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ],
+              child: Card(
+                color: Colors.transparent,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        e.nazivUsluge ?? '',
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        '${e.cijena} KM',
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        'Trajanje: ${e.trajanje} min',
+                        style: const TextStyle(
+                            color: Colors.white70, fontSize: 14),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -288,7 +302,16 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
 
           final e = novosti[index];
 
-          return Container(
+          return GestureDetector(
+            onTap: () async{
+              final result= await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> NovostiDetailsScreen(
+                novosti: e,
+                onDataChanged: _fetchNovosti,
+              ),),);
+              if(result!= null) _fetchNovosti();
+            },
+          
+          child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -342,7 +365,7 @@ class _UslugaNovostiScreen extends State<UslugaNovostiScreen> {
                 ],
               ),
             ),
-          );
+          ),);
         },
       ),
     );
